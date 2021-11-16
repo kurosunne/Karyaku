@@ -6,3 +6,14 @@
     background-color: #532583;
     color: #FDB827;
 }
+
+.btn-outline-custom2{
+    border-color: #532583;
+    background-color: #532583;
+    color: #FDB827;
+}
+
+.btn-outline-custom2:hover{
+    background-color: #FDB827;
+    color: #532583;
+}
