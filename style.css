@@ -1,5 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@700&family=Zen+Antique&display=swap');
+
+body{
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
 .btn-outline-custom{
     border-color: #532583;
+    background-color: white;
 }
 
 .btn-outline-custom:hover{
@@ -16,4 +25,29 @@
 .btn-outline-custom2:hover{
     background-color: #FDB827;
     color: #532583;
+}
+
+.bg-gold{
+    background-color: #FDB827;
+}
+
+.bg-purple{
+    background-color: #532583;
+}
+
+.text-gold{
+    color: #FDB827;
+}
+
+.text-purple{
+    color: #532583;
+}
+
+.tombol{
+    border-radius: 8px;
+}
+
+.tombol:hover{
+    cursor: pointer;
+    box-shadow: 0px 2px 4px 0px rgb(124, 124, 116);
 }

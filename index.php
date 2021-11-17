@@ -11,20 +11,23 @@
 </head>
 <body>
     <?php
+        require_once("koneksi.php");
         require_once("header.php");
+        // echo "<pre>";
+        // var_dump($_SESSION["active"]);
+        // echo "</pre>";
     ?>
-
     <div class="container d-flex justify-content-center mt-3">
-        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="width: 75%; height:40vh; border-radius:10px;">
+        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="width: 90%; height:400px; border-radius:10px;">
             <div class="carousel-inner">
                 <div class="carousel-item active" data-bs-interval="5000">
-                <img style=" height:40vh; border-radius:10px;" src="asset/Banner/baner1.jpg" class="d-block w-100" alt="...">
+                <img style=" height:400px; border-radius:10px;" src="asset/Banner/baner1.jpg" class="d-block w-100" alt="...">
                 </div>
                 <div class="carousel-item" data-bs-interval="5000">
-                <img style=" height:40vh; border-radius:10px;" src="asset/Banner/baner2.jpg" class="d-block w-100" alt="...">
+                <img style=" height:400px; border-radius:10px;" src="asset/Banner/baner2.jpg" class="d-block w-100" alt="...">
                 </div>
                 <div class="carousel-item" data-bs-interval="5000">
-                <img style=" height:40vh; border-radius:10px;" src="asset/Banner/baner3.jpg" class="d-block w-100" alt="...">
+                <img style=" height:400px; border-radius:10px;" src="asset/Banner/baner3.jpg" class="d-block w-100" alt="...">
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
