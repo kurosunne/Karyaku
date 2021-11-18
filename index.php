@@ -13,6 +13,9 @@
     <?php
         require_once("koneksi.php");
         require_once("header.php");
+        if(isset($_SESSION["index"])){
+            unset($_SESSION["index"]);
+        }
         // echo "<pre>";
         // var_dump($_SESSION["active"]);
         // echo "</pre>";

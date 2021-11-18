@@ -28,6 +28,7 @@ if (mysqli_num_rows($result) != 0) {
     $all_product = $row["product_id"];
 }
 if (isset($_REQUEST["btAdd"])) {
+    $_SESSION["index"] = 3;
     if ($_REQUEST["name"] != "" && $_REQUEST["brand"] != "" && $_REQUEST["desc"] != "" && $_REQUEST["stock"] != "" && $_REQUEST["price"] != "") {
         $query = $koneksi->prepare("INSERT into list_product (name,price,stock,description,brand_name,image) values(?,?,?,?,?,?)");
         $query->bind_param("siisss", $_REQUEST["name"], $_REQUEST["price"], $_REQUEST["stock"], $_REQUEST["desc"], $_REQUEST["brand"], $_SESSION["image"]);
@@ -42,8 +43,7 @@ if (isset($_REQUEST["btAdd"])) {
                 $insert->execute();
             }
         }
-
-        $berhasil = 2;//Berhasil
+        $berhasil = 2; //Berhasil
     } else {
         $berhasil = 1; //field ada yang kosong
     }
@@ -52,6 +52,7 @@ if ($berhasil != 1) {
     $_SESSION["image"] = "asset/misc/empty.jpg";
 }
 if (isset($_REQUEST["btUpload"])) {
+    $_SESSION["index"] = 3;
     $target_dir = "asset/product/";
 
     $f = $_FILES["fileup"];
@@ -71,6 +72,38 @@ if (isset($_REQUEST["btUpload"])) {
         move_uploaded_file($source, $sink);
     }
 }
+
+$queryy = $koneksi->prepare("SELECT * from list_product");
+$queryy->execute();
+$listP = $queryy->get_result()->fetch_all(MYSQLI_ASSOC);
+
+foreach ($listP as $key => $value) {
+    if (isset($_REQUEST["btUpload" . $value["product_id"]])) {
+        $target_dir = "asset/product/";
+
+        $f = $_FILES["fileup" . $value["product_id"]];
+        $info = pathinfo($f["name"]);
+
+        $ext = $info["extension"];
+        $filename = $info["filename"];
+
+        $sink = $target_dir . $value["product_id"] . "." . $ext;
+
+        $source = $f["tmp_name"];
+
+        if ($f["size"] > 200000) {
+            echo "File terlalu besar!";
+        } else {
+            move_uploaded_file($source, $sink);
+            $upd = $koneksi->prepare("UPDATE list_product set image=? where product_id=?");
+            $upd->bind_param("si", $sink, $value["product_id"]);
+            $upd->execute();
+            $_SESSION["index"] = 4;
+            header("Location: admin.php");
+        }
+    }
+}
+
 ?>
 
 <body style="overflow: hidden;">
@@ -95,7 +128,7 @@ if (isset($_REQUEST["btUpload"])) {
                 <div class="modal-dialog">
                     <div class="modal-content">
                     <div class="modal-body bg-success p-0">
-                        <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" onclick="refresh()" class="btn-close float-end m-2 focus" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body bg-success d-flex pt-0 justify-content-center pb-4">
                         <h4 class="text-light">Add Product Berhasil</h4>
@@ -104,9 +137,23 @@ if (isset($_REQUEST["btUpload"])) {
                 </div>
                 </div>
             ';
+            header('Refresh: 3; url = admin.php');
+            $_SESSION["index"] = 1;
         }
     }
     ?>
+    <div class="modal" id="delaler" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body bg-danger p-0">
+                    <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-danger d-flex pt-0 justify-content-center pb-4">
+                    <h4 class="text-light">Deleted !</h4>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-2 bg-light d-flex flex-column align-items-center p-0 shadow" style="height: 100vh;">
             <a href=""><img src="asset/logo.png" class="klik mb-5" alt="" width="240px" height="120px"></a>
@@ -167,7 +214,9 @@ if (isset($_REQUEST["btUpload"])) {
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
         $("#listDiscount").removeClass("bg-purple text-gold");
-        $.post("kontroler.php", {action : "addProduct"},function (data, status) { 
+        $.post("kontroler.php", {
+            action: "addProduct"
+        }, function(data, status) {
             $("#box").html(data);
         });
     }
@@ -179,6 +228,49 @@ if (isset($_REQUEST["btUpload"])) {
         $("#listProduct").addClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
         $("#listDiscount").removeClass("bg-purple text-gold");
+        $.post("kontroler.php", {
+            action: "listProduct"
+        }, function(data, status) {
+            $("#box").html(data);
+        });
+    }
+
+    function editProduct(index) {
+        $.post("kontroler.php", {
+            action: "editProduct",
+            id: index
+        }, function(data, status) {
+            $("#div" + index).html(data);
+        });
+    }
+
+    function deleteProduct(index) {
+        $.post("kontroler.php", {
+            action: "deleteProduct",
+            id: index
+        }, function(data, status) {
+            $("#box").html(data);
+            $("#delaler").modal("show");
+        });
+    }
+
+    function saveEditProduct(index) {
+        var tempNama = $("#name" + index).val();
+        var tempBrand = $("#brand" + index).val();
+        var tempDesc = $("#desc" + index).val();
+        var tempStock = $("#stock" + index).val();
+        var tempPrice = $("#price" + index).val();
+        $.post("kontroler.php", {
+            action: "saveEditProduct",
+            id: index,
+            name: tempNama,
+            brand: tempBrand,
+            desc: tempDesc,
+            stock: tempStock,
+            price: tempPrice
+        }, function(data, status) {
+            $("#div" + index).html(data);
+        });
     }
 
     function addDiscount() {
@@ -202,3 +294,18 @@ if (isset($_REQUEST["btUpload"])) {
         $("#aler").modal("show");
     });
 </script>
+<?php
+if ($_SESSION["index"] == 3) {
+?>
+    <script>
+        addProduct();
+    </script>
+<?php
+}else if($_SESSION["index"]==4){
+?>
+    <script>
+        listProduct();
+    </script>
+<?php
+}
+?>
