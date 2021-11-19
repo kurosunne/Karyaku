@@ -27,6 +27,7 @@ if (mysqli_num_rows($result) != 0) {
     $row = $result->fetch_assoc();
     $all_product = $row["product_id"];
 }
+//ADD PRODUCT ACTION
 if (isset($_REQUEST["btAdd"])) {
     $_SESSION["index"] = 3;
     if ($_REQUEST["name"] != "" && $_REQUEST["brand"] != "" && $_REQUEST["desc"] != "" && $_REQUEST["stock"] != "" && $_REQUEST["price"] != "") {
@@ -48,6 +49,19 @@ if (isset($_REQUEST["btAdd"])) {
         $berhasil = 1; //field ada yang kosong
     }
 }
+
+//ADD KATEGORI ACTION
+if (isset($_REQUEST["addC"])) {
+    $_SESSION["index"] = 2;
+    if ($_REQUEST["name_category"]!="") {
+        $query = $koneksi->prepare("INSERT INTO list_category (nama) VALUES (?)");
+        $query->bind_param("s", $_REQUEST["name_category"]);
+        $query->execute();
+
+        $berhasil = 3;
+    } else $berhasil = 1;
+}
+
 if ($berhasil != 1) {
     $_SESSION["image"] = "asset/misc/empty.jpg";
 }
@@ -106,7 +120,8 @@ foreach ($listP as $key => $value) {
 
 ?>
 
-<body style="overflow: hidden;">
+<body style="overflow: scroll;">
+
     <?php
     if (isset($berhasil)) {
         if ($berhasil == 1) {
@@ -139,6 +154,22 @@ foreach ($listP as $key => $value) {
             ';
             header('Refresh: 3; url = admin.php');
             $_SESSION["index"] = 1;
+        } else if ($berhasil == 3) {
+            echo '<div class="modal" id="aler" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-body bg-success p-0">
+                        <button type="button" onclick="refresh()" class="btn-close float-end m-2 focus" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-success d-flex pt-0 justify-content-center pb-4">
+                        <h4 class="text-light">Add Kategori Berhasil !</h4>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            ';
+            header('Refresh: 3; url = admin.php');
+            $_SESSION["index"] = 1;
         }
     }
     ?>
@@ -155,13 +186,16 @@ foreach ($listP as $key => $value) {
         </div>
     </div>
     <div class="row">
-        <div class="col-2 bg-light d-flex flex-column align-items-center p-0 shadow" style="height: 100vh;">
+        <div class="col-3 bg-light d-flex flex-column align-items-center p-0 shadow" style="height: 100vh;">
             <a href=""><img src="asset/logo.png" class="klik mb-5" alt="" width="240px" height="120px"></a>
-            <div class="tombol mt-5 py-2 d-flex justify-content-center" style="width: 99%;" onclick="update()" id="update">
+            <div class="tombol mt-xxl-5 py-2 d-flex justify-content-center" style="width: 99%;" onclick="update()" id="update">
                 <h2>Update</h2>
             </div>
             <div class="tombol mt-2 py-2 d-flex justify-content-center" style="width: 99%;" onclick="history()" id="history">
                 <h2>History</h2>
+            </div>
+            <div class="tombol mt-2 py-2 d-flex justify-content-center" style="width: 99%;" onclick="addKategori()" id="addKategori">
+                <h2>Add Category</h2>
             </div>
             <div class="tombol mt-2 py-2 d-flex justify-content-center" style="width: 99%;" onclick="addProduct()" id="addProduct">
                 <h2>Add Product</h2>
@@ -181,7 +215,7 @@ foreach ($listP as $key => $value) {
                 </a>
             </div>
         </div>
-        <div class="col-10 p-0" id="box">
+        <div class="col-9 p-0" id="box">
             
         </div>
     </div>
@@ -205,6 +239,21 @@ foreach ($listP as $key => $value) {
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
         $("#listDiscount").removeClass("bg-purple text-gold");
+    }
+
+    function addKategori() {
+        $("#update").removeClass("bg-purple text-gold");
+        $("#history").removeClass("bg-purple text-gold");
+        $("#addKategori").removeClass("bg-purple text-gold");
+        $("#addProduct").removeClass("bg-purple text-gold");
+        $("#listProduct").removeClass("bg-purple text-gold");
+        $("#addDiscount").removeClass("bg-purple text-gold");
+        $("#listDiscount").removeClass("bg-purple text-gold");
+        $.post("kontroler.php", {
+            action: "addKategori"
+        }, function(data, status) {
+            $("#box").html(data);
+        });
     }
 
     function addProduct() {

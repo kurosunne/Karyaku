@@ -1,11 +1,28 @@
 <?php
 require_once("koneksi.php");
 if (isset($_REQUEST["action"])) {
+    //SIGN OUT
     if ($_REQUEST["action"] == "signOut") {
         unset($_SESSION["active"]);
         header("Location: index.php");
     }
 
+    //MENU ADD KATEGORI
+    if ($_REQUEST["action"] == "addKategori") {
+        echo '<div style="width: 100%; height:100%;" class="d-flex flex-column align-items-center">
+            <h1 class="my-4">Add Category</h1>
+            <div style="height: 500px; width:100%" class="row ms-4">
+                <div class="col-11">
+                    <form action="" method="post">
+                        <input class="mt-4" type="text" placeholder="Category Name" style="border-radius: 5px; height:40px; width:85%;" name="name_category">
+                        <button class="btn btn-primary mt-3" name="addC" style="height:40px; width:85%;">Add</button>
+                    </form>
+                </div>
+            </div>
+            </div>';
+    }
+
+    //MENU ADD PRODUCT
     if ($_REQUEST["action"] == "addProduct") {
         $queri = $koneksi->prepare("select * from list_category");
         $queri->execute();
@@ -33,7 +50,7 @@ if (isset($_REQUEST["action"])) {
         foreach ($hasil as $key => $value) {
             echo '<input type="checkbox" class="mt-1 me-1" name="c' . ($key + 1) . '"><label class="me-3 mt-0">' . $value["nama"] . '</label>';
         }
-        echo    '</div>
+                    echo    '</div>
                             <button class="btn btn-primary mt-3" name="btAdd" style="height:40px; width:85%;">Add</button>
                         </form>
                     </div>
@@ -42,6 +59,7 @@ if (isset($_REQUEST["action"])) {
         </div>';
     }
 
+    //MENU EDIT PRODUCT
     if ($_REQUEST["action"] == "editProduct") {
         $id = $_REQUEST["id"];
         $data = $koneksi->prepare("SELECT * from list_product where product_id=?");
