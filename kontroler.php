@@ -1,5 +1,11 @@
 <?php
 require_once("koneksi.php");
+//ERROR MESSAGE
+error_reporting(-1);
+ini_set("display_errors", "1");
+ini_set("log_errors", 1);
+ini_set("error_log", "php-error.log");
+
 if (isset($_REQUEST["action"])) {
     //SIGN OUT
     if ($_REQUEST["action"] == "signOut") {
@@ -68,10 +74,34 @@ if (isset($_REQUEST["action"])) {
         $dataGet = $data->get_result()->fetch_assoc();
         echo '<input class="mt-4" type="text" placeholder="Product Name" id="name' . $id . '" value="' . $dataGet["name"] . '" style="border-radius: 5px; height:40px; width:85%;" name="name">
         <input class="mt-4" type="text" placeholder="Product Brand" value="' . $dataGet["brand_name"] . '" id="brand' . $id . '" style="border-radius: 5px; height:40px; width:85%;" name="brand">
-        <textarea class="mt-4" type="textbox" placeholder="Product Description"  id="desc' . $id . '" style="border-radius: 5px; width:85%; border:2px solid black;" rows="5" name="desc">' . $dataGet["description"] . '"</textarea>
+        <textarea class="mt-4" type="textbox" placeholder="Product Description"  id="desc' . $id . '" style="border-radius: 5px; width:85%; border:2px solid black;" rows="5" name="desc">' . $dataGet["description"] . '</textarea>
         <input class="mt-4" type="number" placeholder="Product Stock" value="' . $dataGet["stock"] . '" id="stock' . $id . '" style="border-radius: 5px; height:40px; width:85%;" name="stock">
         <input class="mt-4" type="number" placeholder="Product Price" value="' . $dataGet["price"] . '" id="price' . $id . '" style="border-radius: 5px; height:40px; width:85%;" name="price"> <br>
         <button type="button" class="btn btn-primary my-3 float-end" onclick="saveEditProduct(' . $id . ')">Apply</button>';
+    }
+
+    //MENU ADD DISCOUNT
+    if ($_REQUEST["action"]=="addDiscount") {
+        $query = $koneksi->prepare("SELECT * from list_product");
+        $query->execute();
+        $listP = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+        echo '<div style="width: 100%; height:100%;" class="d-flex flex-column align-items-center">
+            <h1 class="my-4">Add Discount</h1>
+            <div style="height: 500px; width:100%" class="row ms-4">
+                <div class="col-11">
+                    <form action="" method="post">
+                        <select class="form-select" id="product_list" name="productDisc">';
+        foreach ($listP as $key => $value) {
+            echo '<option value="'.$value["product_id"].'">'.$value["name"].'</option>';
+        }
+        echo            '</select>
+                        <input class="mt-4" type="name" placeholder="Discount Name" style="border-radius: 5px; height:40px; width:85%;" name="disc_name">
+                        <input class="mt-4" type="number" placeholder="Discount Percentage" style="border-radius: 5px; height:40px; width:85%;" name="disc_number">
+                        <button class="btn btn-primary mt-3" name="addDiscount" style="height:40px; width:85%;">Add</button>
+                    </form>
+                </div>
+            </div>
+            </div>';
     }
 
     if ($_REQUEST["action"] == "saveEditProduct") {
@@ -98,6 +128,7 @@ if (isset($_REQUEST["action"])) {
         <button type="button" onclick="editProduct(' . $value["product_id"] . ')" class="btn btn-secondary float-end mb-2"> Edit </button>';
     }
 
+    //MENU LIST PRODUCT
     if ($_REQUEST["action"] == "listProduct") {
         $_SESSION["index"] = 1;
         $queryy = $koneksi->prepare("SELECT * from list_product");
@@ -130,6 +161,7 @@ if (isset($_REQUEST["action"])) {
     </div>';
     }
 
+    //DELETE PRODUCT ACTION & RESULT
     if ($_REQUEST["action"] == "deleteProduct") {
         $delete = $koneksi->prepare("DELETE from list_product where product_id=?");
         $delete->bind_param("i", $_REQUEST["id"]);

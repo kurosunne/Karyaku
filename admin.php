@@ -58,13 +58,32 @@ if (isset($_REQUEST["addC"])) {
         $query->bind_param("s", $_REQUEST["name_category"]);
         $query->execute();
 
-        $berhasil = 3;
+        $berhasil = 3; //BERHASIL ADD CATEGORY
     } else $berhasil = 1;
+}
+
+//ADD DISCOUNT ACTION
+if (isset($_REQUEST["addDiscount"])) {
+    $_SESSION["index"] = 5;
+    if ($_REQUEST["productDisc"]!="" && $_REQUEST["disc_name"]!="" && $_REQUEST["disc_number"]!="") {
+        $num = intval($_REQUEST["disc_number"]);
+
+        if ($num<1 && $num>100) $berhasil = -1; //NILAI DISCOUNT INVALID
+        else {
+            //INSERT INTO DISCOUNT
+            $query = $koneksi->prepare("INSERT INTO discount (discount_name, product_id, discount_value) VALUES (?,?,?)");
+            $query->bind_param("sss", $_REQUEST["disc_name"], $_REQUEST["productDisc"], $_REQUEST["disc_number"]);
+            $query->execute();
+
+            $berhasil = 4; //BERHASIL INSERT DISCOUNT
+        }
+    } else $berhasil = 1; //INPUT KOSONG
 }
 
 if ($berhasil != 1) {
     $_SESSION["image"] = "asset/misc/empty.jpg";
 }
+//UPLOAD PICTURE TO FOLDER PRODUCT
 if (isset($_REQUEST["btUpload"])) {
     $_SESSION["index"] = 3;
     $target_dir = "asset/product/";
@@ -121,7 +140,7 @@ foreach ($listP as $key => $value) {
 ?>
 
 <body style="overflow: scroll;">
-
+    <!--MODAL LIST-->
     <?php
     if (isset($berhasil)) {
         if ($berhasil == 1) {
@@ -133,6 +152,20 @@ foreach ($listP as $key => $value) {
                     </div>
                     <div class="modal-body bg-danger d-flex pt-0 justify-content-center  pb-4">
                         <h4 class="text-light">Field Tidak Boleh Ada Yang Kosong!</h4>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            ';
+        } else if ($berhasil==-1) {
+            echo '<div class="modal" id="aler" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-body bg-danger p-0">
+                        <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-danger d-flex pt-0 justify-content-center  pb-4">
+                        <h4 class="text-light">Input Discount Number tidak boleh kurang dari 0 dan lebih dari 100!</h4>
                     </div>
                     </div>
                 </div>
@@ -153,7 +186,7 @@ foreach ($listP as $key => $value) {
                 </div>
             ';
             header('Refresh: 3; url = admin.php');
-            $_SESSION["index"] = 1;
+            $_SESSION["index"] = 3;
         } else if ($berhasil == 3) {
             echo '<div class="modal" id="aler" tabindex="-1">
                 <div class="modal-dialog">
@@ -169,10 +202,27 @@ foreach ($listP as $key => $value) {
                 </div>
             ';
             header('Refresh: 3; url = admin.php');
-            $_SESSION["index"] = 1;
+            $_SESSION["index"] = 6;
+        } else if ($berhasil==4) {
+            echo '<div class="modal" id="aler" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-body bg-success p-0">
+                        <button type="button" onclick="refresh()" class="btn-close float-end m-2 focus" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body bg-success d-flex pt-0 justify-content-center pb-4">
+                        <h4 class="text-light">Add Discount Berhasil !</h4>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            ';
+            header('Refresh: 3; url = admin.php');
+            $_SESSION["index"] = 5;
         }
     }
     ?>
+    <!--MODAL -->
     <div class="modal" id="delaler" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -185,6 +235,7 @@ foreach ($listP as $key => $value) {
             </div>
         </div>
     </div>
+    <!--SIDEBAR -->
     <div class="row">
         <div class="col-3 bg-light d-flex flex-column align-items-center p-0 shadow" style="height: 100vh;">
             <a href=""><img src="asset/logo.png" class="klik mb-5" alt="" width="240px" height="120px"></a>
@@ -215,6 +266,7 @@ foreach ($listP as $key => $value) {
                 </a>
             </div>
         </div>
+        <!--CONTENT -->
         <div class="col-9 p-0" id="box">
             
         </div>
@@ -224,8 +276,10 @@ foreach ($listP as $key => $value) {
 </html>
 <script>
     function update() {
+        //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").addClass("bg-purple text-gold");
         $("#history").removeClass("bg-purple text-gold");
+        $("#addKategori").removeClass("bg-purple text-gold");
         $("#addProduct").removeClass("bg-purple text-gold");
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
@@ -233,8 +287,10 @@ foreach ($listP as $key => $value) {
     }
 
     function history() {
+        //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").removeClass("bg-purple text-gold");
         $("#history").addClass("bg-purple text-gold");
+        $("#addKategori").removeClass("bg-purple text-gold");
         $("#addProduct").removeClass("bg-purple text-gold");
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
@@ -242,9 +298,10 @@ foreach ($listP as $key => $value) {
     }
 
     function addKategori() {
+        //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").removeClass("bg-purple text-gold");
         $("#history").removeClass("bg-purple text-gold");
-        $("#addKategori").removeClass("bg-purple text-gold");
+        $("#addKategori").addClass("bg-purple text-gold");
         $("#addProduct").removeClass("bg-purple text-gold");
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
@@ -257,8 +314,10 @@ foreach ($listP as $key => $value) {
     }
 
     function addProduct() {
+        //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").removeClass("bg-purple text-gold");
         $("#history").removeClass("bg-purple text-gold");
+        $("#addKategori").removeClass("bg-purple text-gold");
         $("#addProduct").addClass("bg-purple text-gold");
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
@@ -271,8 +330,10 @@ foreach ($listP as $key => $value) {
     }
 
     function listProduct() {
+        //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").removeClass("bg-purple text-gold");
         $("#history").removeClass("bg-purple text-gold");
+        $("#addKategori").removeClass("bg-purple text-gold");
         $("#addProduct").removeClass("bg-purple text-gold");
         $("#listProduct").addClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
@@ -323,15 +384,23 @@ foreach ($listP as $key => $value) {
     }
 
     function addDiscount() {
+        //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").removeClass("bg-purple text-gold");
         $("#history").removeClass("bg-purple text-gold");
         $("#addProduct").removeClass("bg-purple text-gold");
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").addClass("bg-purple text-gold");
         $("#listDiscount").removeClass("bg-purple text-gold");
+        //SHOW ADD DISCOUNT MENU
+        $.post("kontroler.php", {
+            action: "addDiscount"
+        }, function(data, status) {
+            $("#box").html(data);
+        });
     }
 
     function listDiscount() {
+        //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").removeClass("bg-purple text-gold");
         $("#history").removeClass("bg-purple text-gold");
         $("#addProduct").removeClass("bg-purple text-gold");
@@ -339,22 +408,38 @@ foreach ($listP as $key => $value) {
         $("#addDiscount").removeClass("bg-purple text-gold");
         $("#listDiscount").addClass("bg-purple text-gold");
     }
+
     $(document).ready(function() {
         $("#aler").modal("show");
     });
 </script>
 <?php
+//GO TO ADD PRODUCT MENU AFTER ADDING PRODUCT
 if ($_SESSION["index"] == 3) {
 ?>
     <script>
         addProduct();
     </script>
 <?php
+//GO TO LIST PRODUCT MENU AFTER EDITING / DELETING
 }else if($_SESSION["index"]==4){
 ?>
     <script>
         listProduct();
     </script>
 <?php
+//GO TO ADD DISCOUNT MENU AFTER ADDING DISCOUNT
+} else if ($_SESSION["index"]==5) {
+?>
+    <script>
+        addDiscount();
+    </script>
+<?php    
+} else if ($_SESSION["index"]==6) {
+?>
+    <script>
+        addKategori();
+    </script>
+<?php  
 }
 ?>
