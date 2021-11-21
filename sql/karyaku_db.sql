@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 18, 2021 at 06:28 AM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 8.0.10
+-- Host: localhost
+-- Generation Time: Nov 22, 2021 at 12:04 AM
+-- Server version: 10.4.18-MariaDB
+-- PHP Version: 8.0.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `karyaku_db`
 --
-CREATE DATABASE IF NOT EXISTS `karyaku_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `karyaku_db`;
 
 -- --------------------------------------------------------
 
@@ -29,7 +27,6 @@ USE `karyaku_db`;
 -- Table structure for table `cart`
 --
 
-DROP TABLE IF EXISTS `cart`;
 CREATE TABLE `cart` (
   `cart_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -43,12 +40,19 @@ CREATE TABLE `cart` (
 -- Table structure for table `discount`
 --
 
-DROP TABLE IF EXISTS `discount`;
 CREATE TABLE `discount` (
   `discount_id` int(11) NOT NULL,
+  `discount_name` varchar(100) NOT NULL,
   `product_id` int(11) NOT NULL,
-  `value` int(11) NOT NULL
+  `discount_value` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `discount`
+--
+
+INSERT INTO `discount` (`discount_id`, `discount_name`, `product_id`, `discount_value`) VALUES
+(1, 'Diskon Buku', 3, 50);
 
 -- --------------------------------------------------------
 
@@ -56,7 +60,6 @@ CREATE TABLE `discount` (
 -- Table structure for table `history`
 --
 
-DROP TABLE IF EXISTS `history`;
 CREATE TABLE `history` (
   `History_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -72,11 +75,19 @@ CREATE TABLE `history` (
 -- Table structure for table `list_category`
 --
 
-DROP TABLE IF EXISTS `list_category`;
 CREATE TABLE `list_category` (
   `category_id` int(11) NOT NULL,
   `nama` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `list_category`
+--
+
+INSERT INTO `list_category` (`category_id`, `nama`) VALUES
+(1, 'Buku'),
+(2, 'Alat Tulis'),
+(3, 'Kantor');
 
 -- --------------------------------------------------------
 
@@ -84,7 +95,6 @@ CREATE TABLE `list_category` (
 -- Table structure for table `list_product`
 --
 
-DROP TABLE IF EXISTS `list_product`;
 CREATE TABLE `list_product` (
   `product_id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -95,13 +105,19 @@ CREATE TABLE `list_product` (
   `image` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `list_product`
+--
+
+INSERT INTO `list_product` (`product_id`, `name`, `price`, `stock`, `description`, `brand_name`, `image`) VALUES
+(3, 'Buku Tulis-2', 25000, 50, 'Buku untuk menulis. Dilengkapi dengan cover indah.', 'LOREM', 'asset/product/1.jfif');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `list_user`
 --
 
-DROP TABLE IF EXISTS `list_user`;
 CREATE TABLE `list_user` (
   `users_id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
@@ -125,12 +141,18 @@ INSERT INTO `list_user` (`users_id`, `username`, `password`, `name`, `email`, `a
 -- Table structure for table `product_category`
 --
 
-DROP TABLE IF EXISTS `product_category`;
 CREATE TABLE `product_category` (
   `product_category_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `product_category`
+--
+
+INSERT INTO `product_category` (`product_category_id`, `product_id`, `category_id`) VALUES
+(2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -138,7 +160,6 @@ CREATE TABLE `product_category` (
 -- Table structure for table `wishlist`
 --
 
-DROP TABLE IF EXISTS `wishlist`;
 CREATE TABLE `wishlist` (
   `wishlist_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -211,7 +232,7 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT for table `discount`
 --
 ALTER TABLE `discount`
-  MODIFY `discount_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `discount_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `history`
@@ -223,13 +244,13 @@ ALTER TABLE `history`
 -- AUTO_INCREMENT for table `list_category`
 --
 ALTER TABLE `list_category`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `list_product`
 --
 ALTER TABLE `list_product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `list_user`
@@ -241,7 +262,7 @@ ALTER TABLE `list_user`
 -- AUTO_INCREMENT for table `product_category`
 --
 ALTER TABLE `product_category`
-  MODIFY `product_category_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `product_category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `wishlist`
