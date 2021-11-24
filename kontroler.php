@@ -20,8 +20,8 @@ if (isset($_REQUEST["action"])) {
             <div style="height: 500px; width:100%" class="row ms-4">
                 <div class="col-11">
                     <form action="" method="post">
-                        <input class="mt-4" type="text" placeholder="Category Name" style="border-radius: 5px; height:40px; width:85%;" name="name_category">
-                        <button class="btn btn-primary mt-3" name="addC" style="height:40px; width:85%;">Add</button>
+                        <input class="mt-4" type="text" placeholder="Category Name" style="border-radius: 5px; height:40px; width:100%;" name="name_category">
+                        <button class="btn btn-primary mt-3" name="addC" style="height:40px; width:100%;">Add</button>
                     </form>
                 </div>
             </div>
@@ -30,7 +30,7 @@ if (isset($_REQUEST["action"])) {
 
     //MENU ADD PRODUCT
     if ($_REQUEST["action"] == "addProduct") {
-        $queri = $koneksi->prepare("select * from list_category");
+        $queri = $koneksi->prepare("select * from list_category order by nama");
         $queri->execute();
         $hasil = $queri->get_result()->fetch_all(MYSQLI_ASSOC);
         echo '<div style="width: 100%; height:100%;" class="d-flex flex-column align-items-center">
@@ -95,9 +95,9 @@ if (isset($_REQUEST["action"])) {
             echo '<option value="'.$value["product_id"].'">'.$value["name"].'</option>';
         }
         echo            '</select>
-                        <input class="mt-4" type="name" placeholder="Discount Name" style="border-radius: 5px; height:40px; width:85%;" name="disc_name">
-                        <input class="mt-4" type="number" placeholder="Discount Percentage" style="border-radius: 5px; height:40px; width:85%;" name="disc_number">
-                        <button class="btn btn-primary mt-3" name="addDiscount" style="height:40px; width:85%;">Add</button>
+                        <input class="mt-4" type="name" placeholder="Discount Name" style="border-radius: 5px; height:40px; width:100%;" name="disc_name">
+                        <input class="mt-4" type="number" placeholder="Discount Percentage" style="border-radius: 5px; height:40px; width:100%;" name="disc_number">
+                        <button class="btn btn-primary mt-3" name="addDiscount" style="height:40px; width:100%;">Add</button>
                     </form>
                 </div>
             </div>

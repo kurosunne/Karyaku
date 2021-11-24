@@ -387,6 +387,7 @@ foreach ($listP as $key => $value) {
         //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").removeClass("bg-purple text-gold");
         $("#history").removeClass("bg-purple text-gold");
+        $("#addKategori").removeClass("bg-purple text-gold");
         $("#addProduct").removeClass("bg-purple text-gold");
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").addClass("bg-purple text-gold");
@@ -403,6 +404,7 @@ foreach ($listP as $key => $value) {
         //HIGHTLIGHT BUTTON DI SIDEBAR
         $("#update").removeClass("bg-purple text-gold");
         $("#history").removeClass("bg-purple text-gold");
+        $("#addKategori").removeClass("bg-purple text-gold");
         $("#addProduct").removeClass("bg-purple text-gold");
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
