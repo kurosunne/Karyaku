@@ -46,18 +46,29 @@ $id = $_SESSION["active"]["users_id"];
             $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
             foreach ($hasil as $key => $value) {
+                $diskon = $koneksi->prepare("SELECT * from discount where product_id=?");
+                $diskon->bind_param("i", $value["product_id"]);
+                $diskon->execute();
+                $resdiskon = $diskon->get_result()->fetch_all(MYSQLI_ASSOC);
             ?>
                 <div class=" col-xxl-3 col-xl-4 col-lg-6 mb-xl-0 mb-xxl-0 mb-md-5">
-                    <a href="detail.php?id=<?= $value["product_id"] ?>&nama=<?= $value["name"] ?>" style="klik text-decoration:none; color:black;">
-                        <div style="width: 90%; height:90%" class="shadow d-flex flex-column">
+                    <a href="detail.php?id=<?= $value["product_id"] ?>&nama=<?= $value["name"] ?>" class="klik" style="text-decoration:none; color:black;">
+                        <div style="width: 90%;" class="shadow d-flex flex-column">
                             <img src="<?= $value["image"] ?>" alt="" width="100%">
                             <div style="height: 100px;" class="mt-0 mb-2">
                                 <p class="my-0 ms-1"><?= $value["name"] ?></p>
                             </div>
                             <div>
+                                <?= count($resdiskon) > 0 ? "<p class='float-end mx-2 mt-0 my-0' style='color:grey; text-decoration:line-through; ?>;''>Rp. " . number_format($value["price"], 2, ',', '.') . "</p>" : '' ?>
+                                <div style="clear: both;"></div>
                                 <img class="float-start ms-2" src="asset/Misc/star.png" alt="" height="25px">
                                 <p class="float-start mx-2"><?= $value["rating"] ?>/5</p>
-                                <p class="float-end mx-2">Rp. <?= number_format($value["price"], 2, ',', '.') ?></p>
+                                <?php
+                                if (count($resdiskon) > 0) {
+                                    $tempHarga = $value["price"] - ($resdiskon[0]["discount_value"] / 100 * $value["price"]);
+                                }
+                                ?>
+                                <?= count($resdiskon) > 0 ? "<p class='float-end mx-2 mb-0'>Rp. " . number_format($tempHarga, 2, ',', '.') . "</p>" : '<p class="float-end mx-2" >Rp. ' . number_format($value["price"], 2, ',', '.') . '</p>' ?>
                             </div>
                         </div>
                     </a>
@@ -75,7 +86,7 @@ $id = $_SESSION["active"]["users_id"];
     function removeWishlist(index) {
         $.post("kontroler.php", {
             action: "removeWishlist",
-            item:index
+            item: index
         }, function(data, status) {
             $("#wishlistSuccess").modal("show");
             $("#box").html(data);

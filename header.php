@@ -29,7 +29,7 @@ require_once("koneksi.php");
                             <img src="asset/Misc/profil.jpg" class="ms-xxl-5" alt="" height="40px" width="40px">
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 50px;">
-                            <li><a class="dropdown-item" href="cart.php">Cart</a></li>
+                            <li><a class="dropdown-item" href="midtrans/index.php/snap">Cart</a></li>
                             <li><a class="dropdown-item" href="wishlist.php">Wishlist</a></li>
                             <li><a class="dropdown-item" href="kontroler.php?action=signOut">History</a></li>
                             <li><a class="dropdown-item" href="kontroler.php?action=signOut">Sign Out</a></li>

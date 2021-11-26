@@ -65,7 +65,7 @@ $id = $_SESSION["active"]["users_id"];
                         </div>
                     </a>
                     <button class="btn btn-danger mt-2" onclick="removeCart(<?= $value['product_id'] ?>)" style="width: 90%;">Remove</button>
-                    <button class="btn btn-primary mt-2" onclick="removeCart(<?= $value['product_id'] ?>)" style="width: 90%;">Check Out</button>
+                    <button class="btn btn-primary mt-2" style="width: 90%;">Check Out</button>
                 </div>
             <?php
             }
