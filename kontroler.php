@@ -56,7 +56,7 @@ if (isset($_REQUEST["action"])) {
         foreach ($hasil as $key => $value) {
             echo '<input type="checkbox" class="mt-1 me-1" name="c' . ($key + 1) . '"><label class="me-3 mt-0">' . $value["nama"] . '</label>';
         }
-                    echo    '</div>
+        echo    '</div>
                             <button class="btn btn-primary mt-3" name="btAdd" style="height:40px; width:85%;">Add</button>
                         </form>
                     </div>
@@ -81,7 +81,7 @@ if (isset($_REQUEST["action"])) {
     }
 
     //MENU ADD DISCOUNT
-    if ($_REQUEST["action"]=="addDiscount") {
+    if ($_REQUEST["action"] == "addDiscount") {
         $query = $koneksi->prepare("SELECT * from list_product");
         $query->execute();
         $listP = $query->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -92,7 +92,7 @@ if (isset($_REQUEST["action"])) {
                     <form action="" method="post">
                         <select class="form-select" id="product_list" name="productDisc">';
         foreach ($listP as $key => $value) {
-            echo '<option value="'.$value["product_id"].'">'.$value["name"].'</option>';
+            echo '<option value="' . $value["product_id"] . '">' . $value["name"] . '</option>';
         }
         echo            '</select>
                         <input class="mt-4" type="name" placeholder="Discount Name" style="border-radius: 5px; height:40px; width:100%;" name="disc_name">
@@ -289,5 +289,57 @@ if (isset($_REQUEST["action"])) {
         }
         echo '</div>
     </div>';
+    }
+
+    if ($_REQUEST["action"] == "append") {
+        $sub = $_REQUEST["price"] * $_REQUEST["qty"];
+        echo "Rp. " . number_format($sub, 2, ',', '.');
+    }
+
+    if ($_REQUEST["action"] == "addWishlist") {
+        $item = $_REQUEST["item"];
+
+        $cek = $koneksi->prepare("SELECT * from wishlist where product_id=? and user_id=?");
+        $cek->bind_param("ii", $item, $_SESSION["active"]["users_id"]);
+        $cek->execute();
+        $res = $cek->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        if (count($res) == 0) {
+            $add = $koneksi->prepare("INSERT into wishlist(product_id,user_id) values(?,?)");
+            $add->bind_param("ii", $item, $_SESSION["active"]["users_id"]);
+            $add->execute();
+        }
+    }
+
+    if ($_REQUEST["action"] == "removeWishlist") {
+        $item = $_REQUEST["item"];
+        
+        $cek = $koneksi->prepare("DELETE from wishlist where product_id=? and user_id=?");
+        $cek->bind_param("ii",$item,$_SESSION["active"]["users_id"]);
+        $cek->execute();
+        
+        $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp, wishlist w where lp.product_id=w.product_id and w.user_id=? order by rating desc");
+        $query->bind_param("i", $_SESSION["active"]["users_id"]);
+        $query->execute();
+        $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+        
+        foreach ($hasil as $key => $value) {
+            echo '<div class=" col-xxl-3 col-xl-4 col-lg-6 mb-xl-0 mb-xxl-0 mb-md-5">
+                    <a href="detail.php?id=' . $value["product_id"] . '&nama=' . $value["name"] . '" style="klik text-decoration:none; color:black;">
+                        <div style="width: 90%; height:90%" class="shadow d-flex flex-column">
+                            <img src="' . $value["image"] . '" alt="" width="100%">
+                            <div style="height: 100px;" class="mt-0 mb-2">
+                                <p class="my-0 ms-1">' . $value["name"], '</p>
+                            </div>
+                            <div>
+                                <img class="float-start ms-2" src="asset/Misc/star.png" alt="" height="25px">
+                                <p class="float-start mx-2">' . $value["rating"] . '/5</p>
+                                <p class="float-end mx-2">Rp. ' . number_format($value["price"], 2, ',', '.') . '</p>
+                            </div>
+                        </div>
+                    </a>
+                    <button class="btn btn-danger mt-3" onclick="removeWishlist(' . $value["product_id"] . ')" style="width: 90%;">Remove</button>
+                </div>';
+        }
     }
 }

@@ -3,7 +3,7 @@ require_once("koneksi.php");
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#" class="img-fluid" style="height:50px;">
+        <a class="navbar-brand" href="index.php" class="img-fluid" style="height:50px;">
             <img src="asset/logo.png" style="height:100%" class="img-fluid" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,9 +11,8 @@ require_once("koneksi.php");
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <a href="#" class="btn btn-outline-custom">Advance</a>
                 <form class="d-flex ms-xxl-3 me-xxl-5" style="height: 40px;">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 70vw;">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 73vw;">
                     <button class="btn btn-outline-custom" type="submit">Search</button>
                 </form>
                 <?php
@@ -30,6 +29,9 @@ require_once("koneksi.php");
                             <img src="asset/Misc/profil.jpg" class="ms-xxl-5" alt="" height="40px" width="40px">
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 50px;">
+                            <li><a class="dropdown-item" href="cart.php">Cart</a></li>
+                            <li><a class="dropdown-item" href="wishlist.php">Whistlist</a></li>
+                            <li><a class="dropdown-item" href="kontroler.php?action=signOut">History</a></li>
                             <li><a class="dropdown-item" href="kontroler.php?action=signOut">Sign Out</a></li>
                         </ul>
                     </li>

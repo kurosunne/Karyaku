@@ -15,6 +15,7 @@ require_once("koneksi.php");
 if (isset($_REQUEST["btLogin"])) {
     if ($_REQUEST["username"]=="IniAdmin" && md5($_REQUEST["password"])==md5("Admin")) {
         $_SESSION["index"]=0;
+        $_SESSION["active"]="admin";
         header("Location: admin.php");
     }else{
         $query = $koneksi->prepare("SELECT * from list_user");

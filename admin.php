@@ -14,6 +14,14 @@
 require_once("koneksi.php");
 $berhasil = 0;
 
+if(isset($_SESSION["active"])){
+    if ($_SESSION["active"]!="admin") {
+    header("Location: index.php");
+    }
+}else{
+    header("Location: index.php");
+}
+
 $queri = $koneksi->prepare("select * from list_category");
 $queri->execute();
 $hasil = $queri->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -261,7 +269,7 @@ foreach ($listP as $key => $value) {
                 <h2>List Discount</h2>
             </div>
             <div class="tombol bg-danger mt-2 py-2 d-flex justify-content-center" style="width: 99%;">
-                <a href="index.php" style="text-decoration: none;">
+                <a href="kontroler.php?action=signOut" style="text-decoration: none;">
                     <h2 class="text-white">Sign Out</h2>
                 </a>
             </div>
