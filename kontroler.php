@@ -30,7 +30,7 @@ if (isset($_REQUEST["action"])) {
 
     //MENU ADD PRODUCT
     if ($_REQUEST["action"] == "addProduct") {
-        $queri = $koneksi->prepare("select * from list_category order by nama");
+        $queri = $koneksi->prepare("select * from list_category");
         $queri->execute();
         $hasil = $queri->get_result()->fetch_all(MYSQLI_ASSOC);
         echo '<div style="width: 100%; height:100%;" class="d-flex flex-column align-items-center">
