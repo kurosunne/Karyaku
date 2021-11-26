@@ -25,14 +25,14 @@ $id = $_SESSION["active"]["users_id"];
 ?>
 
 <body>
-    <div class="modal" id="wishlistSuccess" tabindex="-1">
+    <div class="modal" id="cartSuccess" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-body bg-danger p-0">
                     <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body bg-danger d-flex pt-0 justify-content-center pb-4">
-                    <h4 class="text-light">Wishlist Deleted !</h4>
+                    <h4 class="text-light">Item Deleted !</h4>
                 </div>
             </div>
         </div>
@@ -51,8 +51,11 @@ $id = $_SESSION["active"]["users_id"];
                     <a href="detail.php?id=<?= $value["product_id"] ?>&nama=<?= $value["name"] ?>" style="klik text-decoration:none; color:black;">
                         <div style="width: 90%; height:90%" class="shadow d-flex flex-column">
                             <img src="<?= $value["image"] ?>" alt="" width="100%">
-                            <div style="height: 100px;" class="mt-0 mb-2">
+                            <div style="height: 50px;" class="mt-0 mb-2">
                                 <p class="my-0 ms-1"><?= $value["name"] ?></p>
+                            </div>
+                            <div class="mt-0 mb-0">
+                                <p class="float-start ms-2"><?= $value["qty"] ?></p>
                             </div>
                             <div>
                                 <img class="float-start ms-2" src="asset/Misc/star.png" alt="" height="25px">
@@ -61,7 +64,8 @@ $id = $_SESSION["active"]["users_id"];
                             </div>
                         </div>
                     </a>
-                    <button class="btn btn-danger mt-3" onclick="removeWishlist(<?= $value['product_id'] ?>)" style="width: 90%;">Remove</button>
+                    <button class="btn btn-danger mt-2" onclick="removeCart(<?= $value['product_id'] ?>)" style="width: 90%;">Remove</button>
+                    <button class="btn btn-primary mt-2" onclick="removeCart(<?= $value['product_id'] ?>)" style="width: 90%;">Check Out</button>
                 </div>
             <?php
             }
@@ -72,12 +76,12 @@ $id = $_SESSION["active"]["users_id"];
 
 </html>
 <script>
-    function removeWishlist(index) {
+    function removeCart(index) {
         $.post("kontroler.php", {
-            action: "removeWishlist",
+            action: "removeCart",
             item:index
         }, function(data, status) {
-            $("#wishlistSuccess").modal("show");
+            $("#cartSuccess").modal("show");
             $("#box").html(data);
         });
     }

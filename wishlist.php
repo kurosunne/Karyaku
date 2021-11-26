@@ -32,7 +32,7 @@ $id = $_SESSION["active"]["users_id"];
                     <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body bg-danger d-flex pt-0 justify-content-center pb-4">
-                    <h4 class="text-light">Wishlist Deleted !</h4>
+                    <h4 class="text-light">Item Deleted !</h4>
                 </div>
             </div>
         </div>

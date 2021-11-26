@@ -2,6 +2,7 @@
 <?php
 $id = $_REQUEST["id"];
 $nama = $_REQUEST["nama"];
+
 ?>
 <html lang="en">
 
@@ -36,6 +37,7 @@ $tempHarga = $hasil["price"];
 ?>
 
 <body>
+    <!--MODAL ADD WISHLIST SUCCESS -->
     <div class="modal" id="wishlistSuccess" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -44,6 +46,35 @@ $tempHarga = $hasil["price"];
                 </div>
                 <div class="modal-body bg-success d-flex pt-0 justify-content-center pb-4">
                     <h4 class="text-light">Wishlist Berhasil !</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--MODAL ADD CART SUCCESS -->
+    <div class="modal" id="cartSuccess" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body bg-success p-0">
+                    <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-success d-flex pt-0 justify-content-center pb-4">
+                    <h4 class="text-light">Cart Berhasil !</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--MODAL USER HASNT LOGIN YET -->
+    <div class="modal" id="noLogin" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body bg-danger p-0">
+                    <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-danger d-flex pt-0 justify-content-center pb-4">
+                    <div class="row"><h4 class="text-light">Belum Login !</h4></div>
+                </div>
+                <div class="modal-footer bg-danger d-flex p-0 justify-content-center pb-4">
+                    <button type="button" class="btn btn-danger">Login</button>
                 </div>
             </div>
         </div>
@@ -66,20 +97,20 @@ $tempHarga = $hasil["price"];
                 <p style="white-space: pre-line"><?= $hasil["description"] ?></p>
             </div>
             <div class="col-3">
+                <!--INPUT QUANTITY, WISHLIST, CART BUTTONS -->
                 <div style="width:95%; padding:10px; height:280px; border-radius:10px;" class="shadow">
                     Quantity: <input type="number" onchange="append()" value="1" class="mx-2" style="width: 50px;" id="productQTY">
                     <p class="text-secondary">Stock : <?= $hasil["stock"] ?></p>
                     <input type="hidden" value="<?= $tempHarga ?>" id="productPrice">
                     <h5>Subtotal : </h5>
                     <h5 class="mt-0" id="subtotal">Rp. <?= number_format($tempHarga, 2, ',', '.') ?></h5>
-                    <button class="btn btn-primary mt-3" onclick="addWishlist(<?=$hasil['product_id']?>)" style="width: 100%;">Add to Whistlist</button>
-                    <button class="btn btn-success mt-2" style="width: 100%;">Add to Cart</button>
+                    <button class="btn btn-primary mt-3" onclick="addWishlist(<?=$hasil['product_id']?>)" style="width: 100%;">Add to Wishlist</button>
+                    <button class="btn btn-success mt-2" onclick="addCart(<?=$hasil['product_id']?>)" style="width: 100%;">Add to Cart</button>
                 </div>
             </div>
         </div>
 
         <div class="row">
-
             <?php
             $review = $koneksi->prepare("SELECT * from history h, list_user u where rate!=? and product_id=? and u.users_id=h.user_id");
             $nol = 0;
@@ -135,21 +166,52 @@ $tempHarga = $hasil["price"];
         });
     }
 
+    //ADD WISHLIST (MUST LOGIN FIRST)
     function addWishlist(index){
-        $.post("kontroler.php", {
-            action: "addWishlist",
-            item:index
-        }, function(data, status) {
-            $("#wishlistSuccess").modal("show");
-        });
+        <?php
+            //CHECK LOGIN USER
+            if (isset($_SESSION["active"])) {
+                ?>
+                    //ADD WISHLIST
+                    $.post("kontroler.php", {
+                        action: "addWishlist",
+                        item:index
+                    }, function(data, status) {
+                        $("#wishlistSuccess").modal("show");
+                    });
+                <?php
+            } else {
+                ?>
+                //USER HASNT LOGIN YET
+                    window.location.replace("login.php");
+                <?php
+            }
+        ?>
+        
     }
 
+    //ADD CART (USER MUST LOGIN FIRST)
     function addCart(index){
-        $.post("kontroler.php", {
-            action: "addCart",
-            item:index
-        }, function(data, status) {
-            $("#wishlistSuccess").modal("show");
-        });
+        var qty = $("#productQTY").val();
+        //alert(qty);
+        <?php
+            if (isset($_SESSION["active"])) {
+                ?>
+                    //ADD CART
+                    $.post("kontroler.php", {
+                        action: "addCart",
+                        item:index,
+                        quantity : qty
+                    }, function(data, status) {
+                        $("#cartSuccess").modal("show");
+                    });
+                <?php
+            } else {
+                ?>
+                //USER HASNT LOGIN YET
+                    window.location.replace("login.php");
+                <?php
+            }
+        ?>
     }
 </script>

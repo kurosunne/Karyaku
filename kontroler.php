@@ -296,6 +296,7 @@ if (isset($_REQUEST["action"])) {
         echo "Rp. " . number_format($sub, 2, ',', '.');
     }
 
+    //ADD WISHLIST
     if ($_REQUEST["action"] == "addWishlist") {
         $item = $_REQUEST["item"];
 
@@ -311,6 +312,7 @@ if (isset($_REQUEST["action"])) {
         }
     }
 
+    //REMOVE FROM WISHLIST
     if ($_REQUEST["action"] == "removeWishlist") {
         $item = $_REQUEST["item"];
         
@@ -340,6 +342,63 @@ if (isset($_REQUEST["action"])) {
                     </a>
                     <button class="btn btn-danger mt-3" onclick="removeWishlist(' . $value["product_id"] . ')" style="width: 90%;">Remove</button>
                 </div>';
+        }
+    }
+
+    //ADD CART
+    if ($_REQUEST["action"]=="addCart") {
+        $item = $_REQUEST["item"];
+        $qty = $_REQUEST["quantity"];
+
+        $cek = $koneksi->prepare("SELECT * from cart where product_id=? and user_id=?");
+        $cek->bind_param("ii", $item, $_SESSION["active"]["users_id"]);
+        $cek->execute();
+        $res = $cek->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        if (count($res) == 0) {
+            $add = $koneksi->prepare("INSERT into cart(product_id,user_id,qty) values(?,?,?)");
+            $add->bind_param("iii", $item, $_SESSION["active"]["users_id"], $qty);
+            $add->execute();
+        } else {
+            $add = $koneksi->prepare("UPDATE cart SET qty = qty + ? WHERE product_id = ? AND user_id = ?");
+            $add->bind_param("iii",$qty, $item, $_SESSION["active"]["users_id"]);
+            $add->execute();
+        }
+    }
+
+    //REMOVE FROM CART
+    if ($_REQUEST["action"] == "removeCart") {
+        $item = $_REQUEST["item"];
+        
+        $cek = $koneksi->prepare("DELETE from cart where product_id=? and user_id=?");
+        $cek->bind_param("ii",$item,$_SESSION["active"]["users_id"]);
+        $cek->execute();
+
+        $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating', c.* FROM list_product lp, cart c where lp.product_id=c.product_id and c.user_id=? order by rating desc");
+        $query->bind_param("i", $_SESSION["active"]["users_id"]);
+        $query->execute();
+        $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+        
+        foreach($hasil as $key => $value) {
+            echo '<div class=" col-xxl-3 col-xl-4 col-lg-6 mb-xl-0 mb-xxl-0 mb-md-5">
+                    <a href="detail.php?id=' . $value["product_id"] .'&nama=' . $value["name"] . ' style="klik text-decoration:none; color:black;">
+                    <div style="width: 90%; height:90%" class="shadow d-flex flex-column">
+                        <img src="'. $value["image"] .'" alt="" width="100%">
+                        <div style="height: 50px;" class="mt-0 mb-2">
+                            <p class="my-0 ms-1">'. $value["name"] .'</p>
+                        </div>
+                        <div class="mt-0 mb-0">
+                            <p class="float-start ms-2">'. $value["qty"] .'</p>
+                        </div>
+                        <div>
+                            <img class="float-start ms-2" src="asset/Misc/star.png" alt="" height="25px">
+                            <p class="float-start mx-2">'. $value["rating"] .'/5</p>
+                            <p class="float-end mx-2">Rp.'. number_format($value["price"], 2, ',', '.') . '</p>
+                        </div>
+                    </div>
+                </a>
+                <button class="btn btn-danger mt-3" onclick="removeCart('. $value['product_id'] .')" style="width: 90%;">Remove</button>
+            </div>';
         }
     }
 }
