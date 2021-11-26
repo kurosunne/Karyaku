@@ -104,6 +104,96 @@ if (isset($_REQUEST["action"])) {
             </div>';
     }
 
+    //MENU LIST DISCOUNT
+    if ($_REQUEST["action"]=="listDiscount") {
+        $_SESSION["index"] = 1;
+        $query = $koneksi->prepare("SELECT d.discount_id, d.discount_name, d.discount_value, p.name from discount d INNER JOIN list_product p ON p.product_id = d.product_id");
+        $query->execute();
+        $listD = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        echo '<div style="width: 100%; height:100%;" class="d-flex flex-column align-items-center">
+        <h1 class="my-4">List Product</h1>
+        <div style="height: 830px; width:90%; overflow:auto;">';
+        foreach ($listD as $key => $value) {
+            echo '<div class="my-4 row shadow" style="margin-left:auto; margin-right:auto; width:90%; height:180px; overflow:auto;">
+                    <div class="col-12" id="div' . $value["discount_id"] . '">
+                        <h4>Name :  ' . $value["discount_name"] . '</h4>
+                        <h4>Product : ' . $value["name"] . '</h4>
+                        <h4>Discount: ' . $value["discount_value"] . '%</h4>
+                        <button type="button" onclick="deleteDiscount(' . $value["discount_id"] . ')" class="btn btn-danger float-end mb-2 mx-3"> Delete </button>
+                        <button type="button" onclick="editDiscount(' . $value["discount_id"] . ')" class="btn btn-secondary float-end mb-2"> Edit </button>
+                    </div>
+                </div>';
+        }
+        echo '</div>
+    </div>';
+    }
+
+    //MENU DELETE DISCOUNT
+    if ($_REQUEST["action"] == "deleteDiscount") {
+        $delete = $koneksi->prepare("DELETE from discount where discount_id=?");
+        $delete->bind_param("i", $_REQUEST["id"]);
+        $delete->execute();
+
+        $queryy = $koneksi->prepare("SELECT * from discount");
+        $queryy->execute();
+        $listD = $queryy->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        echo '<div style="width: 100%; height:100%;" class="d-flex flex-column align-items-center">
+        <h1 class="my-4">List Product</h1>
+        <div style="height: 830px; width:90%; overflow:auto;">';
+        foreach ($listD as $key => $value) {
+            echo '<div class="my-4 row shadow" style="margin-left:auto; margin-right:auto; width:90%; height:180px; overflow:auto;">
+                    <div class="col-12" id="div' . $value["discount_id"] . '">
+                        <h4>Name :  ' . $value["discount_name"] . '</h4>
+                        <h4>Product : ' . $value["name"] . '</h4>
+                        <h4>Discount: ' . $value["discount_value"] . '%</h4>
+                        <button type="button" onclick="deleteDiscount(' . $value["discount_id"] . ')" class="btn btn-danger float-end mb-2 mx-3"> Delete </button>
+                        <button type="button" onclick="editDiscount(' . $value["discount_id"] . ')" class="btn btn-secondary float-end mb-2"> Edit </button>
+                    </div>
+                </div>';
+        }
+        echo '</div>
+    </div>';
+    }
+
+    //MENU EDIT DISCOUNT
+    if ($_REQUEST["action"] == "editDiscount") {
+        $id = $_REQUEST["id"];
+        $data = $koneksi->prepare("SELECT d.discount_name, d.discount_value, p.name from discount d, list_product p where d.discount_id=? AND p.product_id = d.product_id");
+        $data->bind_param("i", $id);
+        $data->execute();
+        $dataGet = $data->get_result()->fetch_assoc();
+        echo '<input class="mt-4" type="text" placeholder="Discount Name" id="name' . $id . '" value="' . $dataGet["discount_name"] . '" style="border-radius: 5px; height:40px; width:85%;" name="name">
+        <input class="mt-4" disabled type="text" placeholder="Product Name" value="' . $dataGet["name"] . '" id="product' . $id . '" style="border-radius: 5px; height:40px; width:85%;" name="product">
+        <input class="mt-4" type="number" placeholder="Discount Value" value="' . $dataGet["discount_value"] . '" id="value' . $id . '" style="border-radius: 5px; height:40px; width:85%;" name="value"> <br>
+        <button type="button" class="btn btn-primary my-3 float-end" onclick="saveEditDiscount(' . $id . ')">Apply</button>';
+    }
+
+    //EDIT DISCOUNT ACTION & RESULT
+    if ($_REQUEST["action"] == "saveEditDiscount") {
+        $id = $_REQUEST["id"];
+        $name = $_REQUEST["name"];
+        $value = $_REQUEST["value"];
+        $product = $_REQUEST["product"];
+
+        $update = $koneksi->prepare("UPDATE discount set discount_name=?, discount_value=?  where discount_id=?");
+        $update->bind_param("sii", $name, $value, $id);
+        $update->execute();
+
+        $select = $koneksi->prepare("SELECT * from discount where discount_id=?");
+        $select->bind_param("i", $id);
+        $select->execute();
+        $value = $select->get_result()->fetch_assoc();
+
+        echo '<h4>Discount Name : ' . $value["discount_name"] . '</h4>
+        <h4 style="white-space: pre-line">Product :' . $product . '</h4>
+        <h4>Discount Value : ' . $value["discount_value"] . '</h4>
+        <button type="button" class="btn btn-danger float-end mb-2 mx-3"> Delete </button>
+        <button type="button" onclick="editProduct(' . $value["product_id"] . ')" class="btn btn-secondary float-end mb-2"> Edit </button>';
+    }
+
+    //EDIT PRODUCT ACTION & RESULT
     if ($_REQUEST["action"] == "saveEditProduct") {
         $id = $_REQUEST["id"];
         $name = $_REQUEST["name"];

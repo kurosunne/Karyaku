@@ -222,7 +222,7 @@ foreach ($listP as $key => $value) {
         }
     }
     ?>
-    <!--MODAL -->
+    <!--MODAL-->
     <div class="modal" id="delaler" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -345,6 +345,7 @@ foreach ($listP as $key => $value) {
         });
     }
 
+    //EDIT PRODUCT
     function editProduct(index) {
         $.post("kontroler.php", {
             action: "editProduct",
@@ -354,6 +355,7 @@ foreach ($listP as $key => $value) {
         });
     }
 
+    //DELETE PRODUCT
     function deleteProduct(index) {
         $.post("kontroler.php", {
             action: "deleteProduct",
@@ -364,6 +366,7 @@ foreach ($listP as $key => $value) {
         });
     }
 
+    //SAVE EDIT PRODUCT
     function saveEditProduct(index) {
         var tempNama = $("#name" + index).val();
         var tempBrand = $("#brand" + index).val();
@@ -409,6 +412,48 @@ foreach ($listP as $key => $value) {
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
         $("#listDiscount").addClass("bg-purple text-gold");
+        $.post("kontroler.php", {
+            action: "listDiscount"
+        }, function(data, status) {
+            $("#box").html(data);
+        });
+    }
+
+    //DELETE DISCOUNT
+    function deleteDiscount(index) {
+        $.post("kontroler.php", {
+            action: "deleteDiscount",
+            id: index
+        }, function(data, status) {
+            $("#box").html(data);
+            $("#delaler").modal("show");
+        });
+    }
+    
+    //EDIT DISCOUNT
+    function editDiscount(index) {
+        $.post("kontroler.php", {
+            action: "editDiscount",
+            id: index
+        }, function(data, status) {
+            $("#div" + index).html(data);
+        });
+    }
+
+    //SAVE EDIT DISCOUNT
+    function saveEditDiscount(index) {
+        var tempNama = $("#name" + index).val();
+        var tempProduct = $("#product" + index).val();
+        var tempValue = $("#value" + index).val();
+        $.post("kontroler.php", {
+            action: "saveEditDiscount",
+            id: index,
+            name: tempNama,
+            product : tempProduct,
+            value : tempValue
+        }, function(data, status) {
+            $("#div" + index).html(data);
+        });
     }
 
     $(document).ready(function() {
