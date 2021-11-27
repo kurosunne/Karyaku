@@ -99,7 +99,7 @@ $tempHarga = $hasil["price"];
             <div class="col-3">
                 <!--INPUT QUANTITY, WISHLIST, CART BUTTONS -->
                 <div style="width:95%; padding:10px; height:280px; border-radius:10px;" class="shadow">
-                    Quantity: <input type="number" onchange="append()" value="1" class="mx-2" style="width: 50px;" id="productQTY">
+                    Quantity: <input type="number" onchange="append()" value="1" class="mx-2" style="width: 50px;" id="productQTY" min="1" max="<?=$hasil['stock']?>">
                     <p class="text-secondary">Stock : <?= $hasil["stock"] ?></p>
                     <input type="hidden" value="<?= $tempHarga ?>" id="productPrice">
                     <h5>Subtotal : </h5>

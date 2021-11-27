@@ -248,7 +248,7 @@ class Snap extends CI_Controller {
 		$simpan = $this->db->insert('payment', $data);
 	
 		$user = json_decode($this->input->post('user'), TRUE);
-		
+		$_SESSION["active"] = $user["akun"];
 
     	$this->data['finish'] = json_decode($this->input->post('result_data')); 
 		
