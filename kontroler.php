@@ -291,6 +291,120 @@ if (isset($_REQUEST["action"])) {
     </div>';
     }
 
+    //MENU UPDATE ADMIN
+    if ($_REQUEST["action"]=="updateAdmin") {
+        // $_SESSION["index"] = 1;
+        $query = $koneksi->prepare("SELECT h.History_id, h.product_id, p.name as product_name, u.name as u_name, h.date, h.qty, h.order_info from history h INNER JOIN list_product p ON p.product_id = h.product_id INNER JOIN list_user u ON u.users_id=h.user_id WHERE h.order_info ='menunggu konfirmasi' OR h.order_info = 'sedang dikirim' ");
+        $query->execute();
+        $listH = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        // var_dump($listH);
+
+        echo '<div style="width: 100%; height:100%;" class="d-flex flex-column align-items-center">
+        <h1 class="my-4">List Order</h1>
+        <div style="height: 830px; width:90%; overflow:auto;">';
+        foreach ($listH as $key => $value) {
+            echo '<div class="my-4 row shadow" style="margin-left:auto; margin-right:auto; width:90%; height:180px; overflow:auto;">
+                    <div class="col-12" id="div' . $value["History_id"] . '">
+                        <input type="hidden" id="quantity" name="qty_prod" value='.$value["qty"].'_'. $value["History_id"].'>
+                        <input type="hidden" id="product_id" name="prod_id" value='.$value["product_id"].'_'.$value["History_id"].'>
+                        <h4>Product :  ' . $value["product_name"] . '</h4>
+                        <h4>User : ' . $value["u_name"] . '</h4>
+                        <h4>Quantity : ' . $value["qty"] . ' piece(s)</h4>
+                        <h4>Date : ' . $value["date"] . '</h4>
+                        <h4>Order Info : ' . $value["order_info"] . '</h4>';
+                        if ($value["order_info"]=="menunggu konfirmasi") {
+                            echo '<button type="button" onclick="rejectOrder(' . $value["History_id"] . ')" class="btn btn-danger float-end mb-2 mx-3"> Reject </button>
+                            <button type="button" onclick="acceptOrder(' . $value["History_id"] . ')" class="btn btn-success float-end mb-2"> Accept </button>';
+                        }
+                    echo '</div>
+                </div>';
+        }
+        echo '</div>
+    </div>';
+    }
+
+    //REJECT ORDER
+    if ($_REQUEST["action"]=="rejectOrder") {
+        $id = $_REQUEST["id"];
+        $name = "Gagal";
+
+        $update = $koneksi->prepare("UPDATE history set order_info=? where History_id=?");
+        $update->bind_param("si", $name, $id);
+        $update->execute();
+
+        $query = $koneksi->prepare("SELECT h.History_id, h.product_id, p.name as product_name, u.name as u_name, h.date, h.qty, h.order_info from history h INNER JOIN list_product p ON p.product_id = h.product_id INNER JOIN list_user u ON u.users_id=h.user_id WHERE h.order_info ='menunggu konfirmasi' OR h.order_info = 'sedang dikirim' ");
+        $query->execute();
+        $listH = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        echo '<div style="width: 100%; height:100%;" class="d-flex flex-column align-items-center">
+        <h1 class="my-4">List Order</h1>
+        <div style="height: 830px; width:90%; overflow:auto;">';
+        foreach ($listH as $key => $value) {
+            echo '<div class="my-4 row shadow" style="margin-left:auto; margin-right:auto; width:90%; height:180px; overflow:auto;">
+                    <div class="col-12" id="div' . $value["History_id"] . '">
+                    <input type="hidden" id="quantity" name="qty_prod" value='.$value["qty"].'_'. $value["History_id"].'>
+                    <input type="hidden" id="product_id" name="prod_id" value='.$value["product_id"].'_'.$value["History_id"].'>
+                        <h4>Product :  ' . $value["product_name"] . '</h4>
+                        <h4>User : ' . $value["u_name"] . '</h4>
+                        <h4>Quantity : ' . $value["qty"] . ' piece(s)</h4>
+                        <h4>Date : ' . $value["date"] . '</h4>
+                        <h4>Order Info : ' . $value["order_info"] . '</h4>';
+                        if ($value["order_info"]=="menunggu konfirmasi") {
+                            echo '<button type="button" onclick="rejectOrder(' . $value["History_id"] . ')" class="btn btn-danger float-end mb-2 mx-3"> Reject </button>
+                            <button type="button" onclick="acceptOrder(' . $value["History_id"] . ')" class="btn btn-success float-end mb-2"> Accept </button>';
+                        }
+                    echo '</div>
+                </div>';
+        }
+        echo '</div>
+    </div>';
+    }
+
+    //ACCEPT ORDER
+    if ($_REQUEST["action"]=="acceptOrder") {
+        $id = $_REQUEST["id"];
+
+        $query = $koneksi->prepare("SELECT * FROM history WHERE History_id = ? ");
+        $query->bind_param("i", $id);
+        $query->execute();
+        $listH = $query->get_result()->fetch_row();
+
+        // var_dump($listH);
+
+        $qty = $listH[4];
+        $product_id = $listH[1];
+
+        $query = $koneksi->prepare("SELECT * FROM list_product WHERE product_id = ? ");
+        $query->bind_param("i", $product_id);
+        $query->execute();
+        $listP = $query->get_result()->fetch_row();
+
+        // var_dump($listP);
+
+        $stock = $listP[3];
+
+        // var_dump($qty);
+        // var_dump($stock);
+
+        if ($qty>$stock) {
+            //PROBLEM WITH STOCK
+            echo "0";
+        } else {
+            //ORDER ACCEPTED
+            echo "1";
+
+            $update = $koneksi->prepare("UPDATE list_product set stock = stock - ? where product_id=?");
+            $update->bind_param("ii", $qty, $product_id);
+            $update->execute();
+
+            $name = "sedang dikirim";
+            $update = $koneksi->prepare("UPDATE history set order_info=? where History_id=?");
+            $update->bind_param("si", $name, $id);
+            $update->execute();
+        }
+    }
+
     if ($_REQUEST["action"] == "append") {
         $sub = $_REQUEST["price"] * $_REQUEST["qty"];
         echo "Rp. " . number_format($sub, 2, ',', '.');

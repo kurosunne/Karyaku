@@ -243,6 +243,45 @@ foreach ($listP as $key => $value) {
             </div>
         </div>
     </div>
+    <!--MODAL REJECT ORDER-->
+    <div class="modal" id="rejaler" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body bg-danger p-0">
+                    <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-danger d-flex pt-0 justify-content-center pb-4">
+                    <h4 class="text-light">Order Rejected !</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--MODAL ACCEPT ORDER-->
+    <div class="modal" id="accaler" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body bg-success p-0">
+                    <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-success d-flex pt-0 justify-content-center pb-4">
+                    <h4 class="text-light">Order Accepted !</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--MODAL PROBLEM ORDER-->
+    <div class="modal" id="probaler" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body bg-danger p-0">
+                    <button type="button" class="btn-close float-end m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-danger d-flex pt-0 justify-content-center pb-4">
+                    <h4 class="text-light">Order Problem ! Stock Missing !</h4>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--SIDEBAR -->
     <div class="row">
         <div class="col-3 bg-light d-flex flex-column align-items-center p-0 shadow" style="height: 100vh;">
@@ -251,7 +290,7 @@ foreach ($listP as $key => $value) {
                 <h2>Update</h2>
             </div>
             <div class="tombol mt-2 py-2 d-flex justify-content-center" style="width: 99%;" onclick="history()" id="history">
-                <h2>History</h2>
+                <h2>Report</h2>
             </div>
             <div class="tombol mt-2 py-2 d-flex justify-content-center" style="width: 99%;" onclick="addKategori()" id="addKategori">
                 <h2>Add Category</h2>
@@ -292,6 +331,11 @@ foreach ($listP as $key => $value) {
         $("#listProduct").removeClass("bg-purple text-gold");
         $("#addDiscount").removeClass("bg-purple text-gold");
         $("#listDiscount").removeClass("bg-purple text-gold");
+        $.post("kontroler.php", {
+            action: "updateAdmin"
+        }, function(data, status) {
+            $("#box").html(data);
+        });
     }
 
     function history() {
@@ -461,6 +505,32 @@ foreach ($listP as $key => $value) {
             value : tempValue
         }, function(data, status) {
             $("#div" + index).html(data);
+        });
+    }
+
+    //REJECT ORDER
+    function rejectOrder (index) {
+        $.post("kontroler.php", {
+            action: "rejectOrder",
+            id: index
+        }, function(data, status) {
+            $("#box").html(data);
+            $("#rejaler").modal("show");
+        });
+    }
+
+    //ACCEPT ORDER
+    function acceptOrder (index) {
+        $.post("kontroler.php", {
+            action: "acceptOrder",
+            id: index
+        }, function(data, status, response) {
+            if (data=="1") {
+                $("#accaler").modal("show");
+                update();
+            } else if (data=="0") {
+                $("#probaler").modal("show");
+            }
         });
     }
 
