@@ -1,2 +1,7 @@
 [25-Nov-2021 08:49:31 Europe/Berlin] PHP Warning:  Undefined variable $value in C:\xampp\htdocs\Karyaku\kontroler.php on line 206
 [25-Nov-2021 08:49:31 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\Karyaku\kontroler.php on line 206
+[01-Dec-2021 15:53:04 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\Karyaku\kontroler.php:617
+Stack trace:
+#0 C:\xampp\htdocs\Karyaku\kontroler.php(617): mysqli_stmt->bind_param('i', 1, 'menunggu konfir...')
+#1 {main}
+  thrown in C:\xampp\htdocs\Karyaku\kontroler.php on line 617

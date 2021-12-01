@@ -292,9 +292,9 @@ if (isset($_REQUEST["action"])) {
     }
 
     //MENU UPDATE ADMIN
-    if ($_REQUEST["action"]=="updateAdmin") {
+    if ($_REQUEST["action"] == "updateAdmin") {
         // $_SESSION["index"] = 1;
-        $query = $koneksi->prepare("SELECT h.History_id, h.product_id, p.name as product_name, u.name as u_name, h.date, h.qty, h.order_info from history h INNER JOIN list_product p ON p.product_id = h.product_id INNER JOIN list_user u ON u.users_id=h.user_id WHERE h.order_info ='menunggu konfirmasi' OR h.order_info = 'sedang dikirim' ");
+        $query = $koneksi->prepare("SELECT h.History_id, h.product_id, p.name as product_name, u.name as u_name, h.date, h.qty, h.order_info, p.stock from history h INNER JOIN list_product p ON p.product_id = h.product_id INNER JOIN list_user u ON u.users_id=h.user_id WHERE h.order_info ='menunggu konfirmasi' OR h.order_info = 'sedang dikirim' ");
         $query->execute();
         $listH = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -304,20 +304,31 @@ if (isset($_REQUEST["action"])) {
         <h1 class="my-4">List Order</h1>
         <div style="height: 830px; width:90%; overflow:auto;">';
         foreach ($listH as $key => $value) {
-            echo '<div class="my-4 row shadow" style="margin-left:auto; margin-right:auto; width:90%; height:180px; overflow:auto;">
-                    <div class="col-12" id="div' . $value["History_id"] . '">
-                        <input type="hidden" id="quantity" name="qty_prod" value='.$value["qty"].'_'. $value["History_id"].'>
-                        <input type="hidden" id="product_id" name="prod_id" value='.$value["product_id"].'_'.$value["History_id"].'>
+            echo '<div class="my-4 row shadow ';
+            if ($value["order_info"] == "menunggu konfirmasi") {
+                echo 'bg-gold';
+            } else {
+                echo 'bg-success';
+            }
+            echo '" style="margin-left:auto; margin-right:auto; width:90%; height:180px; overflow:auto;">
+                    <div class="col-12 ';
+            if ($value["order_info"] == "sedang dikirim") {
+                echo 'text-light';
+            }
+            echo '"id="div' . $value["History_id"] . '">
+                        <input type="hidden" id="quantity" name="qty_prod" value=' . $value["qty"] . '_' . $value["History_id"] . '>
+                        <input type="hidden" id="product_id" name="prod_id" value=' . $value["product_id"] . '_' . $value["History_id"] . '>
                         <h4>Product :  ' . $value["product_name"] . '</h4>
                         <h4>User : ' . $value["u_name"] . '</h4>
                         <h4>Quantity : ' . $value["qty"] . ' piece(s)</h4>
+                        <h4>Stock : ' . $value["stock"] . '</h4>
                         <h4>Date : ' . $value["date"] . '</h4>
                         <h4>Order Info : ' . $value["order_info"] . '</h4>';
-                        if ($value["order_info"]=="menunggu konfirmasi") {
-                            echo '<button type="button" onclick="rejectOrder(' . $value["History_id"] . ')" class="btn btn-danger float-end mb-2 mx-3"> Reject </button>
+            if ($value["order_info"] == "menunggu konfirmasi") {
+                echo '<button type="button" onclick="rejectOrder(' . $value["History_id"] . ')" class="btn btn-danger float-end mb-2 mx-3"> Reject </button>
                             <button type="button" onclick="acceptOrder(' . $value["History_id"] . ')" class="btn btn-success float-end mb-2"> Accept </button>';
-                        }
-                    echo '</div>
+            }
+            echo '</div>
                 </div>';
         }
         echo '</div>
@@ -325,7 +336,7 @@ if (isset($_REQUEST["action"])) {
     }
 
     //REJECT ORDER
-    if ($_REQUEST["action"]=="rejectOrder") {
+    if ($_REQUEST["action"] == "rejectOrder") {
         $id = $_REQUEST["id"];
         $name = "Gagal";
 
@@ -343,18 +354,18 @@ if (isset($_REQUEST["action"])) {
         foreach ($listH as $key => $value) {
             echo '<div class="my-4 row shadow" style="margin-left:auto; margin-right:auto; width:90%; height:180px; overflow:auto;">
                     <div class="col-12" id="div' . $value["History_id"] . '">
-                    <input type="hidden" id="quantity" name="qty_prod" value='.$value["qty"].'_'. $value["History_id"].'>
-                    <input type="hidden" id="product_id" name="prod_id" value='.$value["product_id"].'_'.$value["History_id"].'>
+                    <input type="hidden" id="quantity" name="qty_prod" value=' . $value["qty"] . '_' . $value["History_id"] . '>
+                    <input type="hidden" id="product_id" name="prod_id" value=' . $value["product_id"] . '_' . $value["History_id"] . '>
                         <h4>Product :  ' . $value["product_name"] . '</h4>
                         <h4>User : ' . $value["u_name"] . '</h4>
                         <h4>Quantity : ' . $value["qty"] . ' piece(s)</h4>
                         <h4>Date : ' . $value["date"] . '</h4>
                         <h4>Order Info : ' . $value["order_info"] . '</h4>';
-                        if ($value["order_info"]=="menunggu konfirmasi") {
-                            echo '<button type="button" onclick="rejectOrder(' . $value["History_id"] . ')" class="btn btn-danger float-end mb-2 mx-3"> Reject </button>
+            if ($value["order_info"] == "menunggu konfirmasi") {
+                echo '<button type="button" onclick="rejectOrder(' . $value["History_id"] . ')" class="btn btn-danger float-end mb-2 mx-3"> Reject </button>
                             <button type="button" onclick="acceptOrder(' . $value["History_id"] . ')" class="btn btn-success float-end mb-2"> Accept </button>';
-                        }
-                    echo '</div>
+            }
+            echo '</div>
                 </div>';
         }
         echo '</div>
@@ -362,7 +373,7 @@ if (isset($_REQUEST["action"])) {
     }
 
     //ACCEPT ORDER
-    if ($_REQUEST["action"]=="acceptOrder") {
+    if ($_REQUEST["action"] == "acceptOrder") {
         $id = $_REQUEST["id"];
 
         $query = $koneksi->prepare("SELECT * FROM history WHERE History_id = ? ");
@@ -387,7 +398,7 @@ if (isset($_REQUEST["action"])) {
         // var_dump($qty);
         // var_dump($stock);
 
-        if ($qty>$stock) {
+        if ($qty > $stock) {
             //PROBLEM WITH STOCK
             echo "0";
         } else {
@@ -562,5 +573,207 @@ if (isset($_REQUEST["action"])) {
             "data" => $item_details
         );
         echo json_encode($arr);
+    }
+
+    if ($_REQUEST["action"] == "allList") {
+        $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? order by h.History_id desc");
+        $query->bind_param("i", $_SESSION["active"]["users_id"]);
+        $query->execute();
+        $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($data as $key => $value) {
+            echo '<div style="width: 100%;" class="shadow p-2 row my-2">
+                    <div class="col-1 d-flex align-items-center justify-content-center">
+                        <img src="' . $value["image"] . '" class="shadow " width="100%" alt="">
+                    </div>
+                    <div class="col-xxl-10 col-md-9 col-xxs-8" >
+                        <p class="mx-2 mb-0">' . $value["namaProduk"] . '</p>
+                        <p class="mx-2 mb-0">Quantity : ' . $value["qty"] . '</p>
+                        <p class="mx-2 mb-0">Price : ' . number_format($value["price"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0">Total : ' . number_format($value["total"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0" style="color: ';
+            if ($value["order_info"] == "completed") {
+                echo "green";
+            } else if ($value["order_info"] == "sedang dikirim") {
+                echo "blue";
+            } else if ($value["order_info"] == "menunggu konfirmasi") {
+                echo "#FDB827";
+            } else {
+                echo "red";
+            }
+            echo '">Order Info : ' . $value["order_info"] . '</p>
+                    </div>';
+
+            if ($value["order_info"] == "completed" && $value["rate"]==0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            }
+            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
+            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            echo '</div>';
+        }
+    }
+
+    if ($_REQUEST["action"] == "menunggu") {
+        $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? and h.order_info=? order by h.History_id desc");
+        $stat = "menunggu konfirmasi";
+        $query->bind_param("is", $_SESSION["active"]["users_id"],$stat);
+        $query->execute();
+        $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($data as $key => $value) {
+            echo '<div style="width: 100%;" class="shadow p-2 row my-2">
+                    <div class="col-1 d-flex align-items-center justify-content-center">
+                        <img src="' . $value["image"] . '" class="shadow " width="100%" alt="">
+                    </div>
+                    <div class="col-xxl-10 col-md-9 col-xxs-8" >
+                        <p class="mx-2 mb-0">' . $value["namaProduk"] . '</p>
+                        <p class="mx-2 mb-0">Quantity : ' . $value["qty"] . '</p>
+                        <p class="mx-2 mb-0">Price : ' . number_format($value["price"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0">Total : ' . number_format($value["total"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0" style="color: ';
+            if ($value["order_info"] == "completed") {
+                echo "green";
+            } else if ($value["order_info"] == "sedang dikirim") {
+                echo "blue";
+            } else if ($value["order_info"] == "menunggu konfirmasi") {
+                echo "#FDB827";
+            } else {
+                echo "red";
+            }
+            echo '">Order Info : ' . $value["order_info"] . '</p>
+                    </div>';
+
+            if ($value["order_info"] == "completed"  && $value["rate"]==0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            }
+            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
+            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            echo '</div>';
+        }
+    }
+
+    if ($_REQUEST["action"] == "dikirim") {
+        $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? and h.order_info=? order by h.History_id desc");
+        $stat = "sedang dikirim";
+        $query->bind_param("is", $_SESSION["active"]["users_id"],$stat);
+        $query->execute();
+        $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($data as $key => $value) {
+            echo '<div style="width: 100%;" class="shadow p-2 row my-2">
+                    <div class="col-1 d-flex align-items-center justify-content-center">
+                        <img src="' . $value["image"] . '" class="shadow " width="100%" alt="">
+                    </div>
+                    <div class="col-xxl-10 col-md-9 col-xxs-8" >
+                        <p class="mx-2 mb-0">' . $value["namaProduk"] . '</p>
+                        <p class="mx-2 mb-0">Quantity : ' . $value["qty"] . '</p>
+                        <p class="mx-2 mb-0">Price : ' . number_format($value["price"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0">Total : ' . number_format($value["total"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0" style="color: ';
+            if ($value["order_info"] == "completed") {
+                echo "green";
+            } else if ($value["order_info"] == "sedang dikirim") {
+                echo "blue";
+            } else if ($value["order_info"] == "menunggu konfirmasi") {
+                echo "#FDB827";
+            } else {
+                echo "red";
+            }
+            echo '">Order Info : ' . $value["order_info"] . '</p>
+                    </div>';
+
+            if ($value["order_info"] == "completed"  && $value["rate"]==0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            }
+            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
+            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            echo '</div>';
+        }
+    }
+
+    if ($_REQUEST["action"] == "completed") {
+        $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? and h.order_info=? order by h.History_id desc");
+        $stat = "completed";
+        $query->bind_param("is", $_SESSION["active"]["users_id"],$stat);
+        $query->execute();
+        $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($data as $key => $value) {
+            echo '<div style="width: 100%;" class="shadow p-2 row my-2">
+                    <div class="col-1 d-flex align-items-center justify-content-center">
+                        <img src="' . $value["image"] . '" class="shadow " width="100%" alt="">
+                    </div>
+                    <div class="col-xxl-10 col-md-9 col-xxs-8" >
+                        <p class="mx-2 mb-0">' . $value["namaProduk"] . '</p>
+                        <p class="mx-2 mb-0">Quantity : ' . $value["qty"] . '</p>
+                        <p class="mx-2 mb-0">Price : ' . number_format($value["price"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0">Total : ' . number_format($value["total"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0" style="color: ';
+            if ($value["order_info"] == "completed") {
+                echo "green";
+            } else if ($value["order_info"] == "sedang dikirim") {
+                echo "blue";
+            } else if ($value["order_info"] == "menunggu konfirmasi") {
+                echo "#FDB827";
+            } else {
+                echo "red";
+            }
+            echo '">Order Info : ' . $value["order_info"] . '</p>
+                    </div>';
+
+            if ($value["order_info"] == "completed"  && $value["rate"]==0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            }
+            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
+            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            echo '</div>';
+        }
+    }
+
+    if ($_REQUEST["action"] == "gagal") {
+        $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? and h.order_info=? order by h.History_id desc");
+        $stat = "gagal";
+        $query->bind_param("is", $_SESSION["active"]["users_id"],$stat);
+        $query->execute();
+        $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        foreach ($data as $key => $value) {
+            echo '<div style="width: 100%;" class="shadow p-2 row my-2">
+                    <div class="col-1 d-flex align-items-center justify-content-center">
+                        <img src="' . $value["image"] . '" class="shadow " width="100%" alt="">
+                    </div>
+                    <div class="col-xxl-10 col-md-9 col-xxs-8" >
+                        <p class="mx-2 mb-0">' . $value["namaProduk"] . '</p>
+                        <p class="mx-2 mb-0">Quantity : ' . $value["qty"] . '</p>
+                        <p class="mx-2 mb-0">Price : ' . number_format($value["price"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0">Total : ' . number_format($value["total"], 2, ',', '.') . '</p>
+                        <p class="mx-2 mb-0" style="color: ';
+            if ($value["order_info"] == "completed") {
+                echo "green";
+            } else if ($value["order_info"] == "sedang dikirim") {
+                echo "blue";
+            } else if ($value["order_info"] == "menunggu konfirmasi") {
+                echo "#FDB827";
+            } else {
+                echo "red";
+            }
+            echo '">Order Info : ' . $value["order_info"] . '</p>
+                    </div>';
+
+            if ($value["order_info"] == "completed"  && $value["rate"]==0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            }
+            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
+            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            echo '</div>';
+        }
+    }
+
+    if ($_REQUEST["action"] == "selesai") {
+        $id = $_REQUEST["id"];
+        $modif = $koneksi->prepare("UPDATE history set order_info=? where history_id=?");
+        $stat = "completed";
+        $modif->bind_param("si",$stat,$id);
+        $modif->execute();
     }
 }

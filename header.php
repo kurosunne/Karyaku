@@ -31,7 +31,7 @@ require_once("koneksi.php");
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 50px;">
                             <li><a class="dropdown-item" href="midtrans/index.php/snap">Cart</a></li>
                             <li><a class="dropdown-item" href="wishlist.php">Wishlist</a></li>
-                            <li><a class="dropdown-item" href="kontroler.php?action=signOut">History</a></li>
+                            <li><a class="dropdown-item" href="history.php">History</a></li>
                             <li><a class="dropdown-item" href="kontroler.php?action=signOut">Sign Out</a></li>
                         </ul>
                     </li>

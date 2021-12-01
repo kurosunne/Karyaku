@@ -31,8 +31,13 @@ body{
     background-color: #FDB827;
 }
 
+.bg-gold:hover{
+    color: white;
+}
+
 .bg-purple{
     background-color: #532583;
+    color: white;
 }
 
 .text-gold{
