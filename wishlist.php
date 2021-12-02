@@ -24,7 +24,7 @@ if (isset($_SESSION["active"])) {
 $id = $_SESSION["active"]["users_id"];
 ?>
 
-<body>
+<body style="min-height:100vh; display: flex; flex-direction:column;">
     <div class="modal" id="wishlistSuccess" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -37,7 +37,7 @@ $id = $_SESSION["active"]["users_id"];
             </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container" style="flex-grow: 1;">
         <div style="width: 100%;" class="row" id="box">
             <?php
             $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp, wishlist w where lp.product_id=w.product_id and w.user_id=? order by rating desc");
@@ -79,6 +79,9 @@ $id = $_SESSION["active"]["users_id"];
             ?>
         </div>
     </div>
+    <?php
+        require_once("footer.php");
+    ?>
 </body>
 
 </html>

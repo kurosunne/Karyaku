@@ -18,16 +18,16 @@ if (isset($_REQUEST["id"])) {
     $query->bind_param("i", $_REQUEST["id"]);
     $query->execute();
     $hasil = $query->get_result()->fetch_assoc();
-    if ($_SESSION["active"]["users_id"]!=$hasil["users_id"]) {
+    if ($_SESSION["active"]["users_id"] != $hasil["users_id"]) {
         header("Location: index.php");
     }
-    if ($hasil["rate"]!=0) {
+    if ($hasil["rate"] != 0) {
         header("Location: index.php");
     }
     $date = date_create($hasil["date"]);
-    if(isset($_REQUEST["btSubmit"])){
+    if (isset($_REQUEST["btSubmit"])) {
         $queri = $koneksi->prepare("UPDATE history set rate=?, review=? where History_id=?");
-        $queri->bind_param("isi",$_REQUEST["star"],$_REQUEST["review"],$_REQUEST["id"]);
+        $queri->bind_param("isi", $_REQUEST["star"], $_REQUEST["review"], $_REQUEST["id"]);
         $queri->execute();
         header("Location: index.php");
     }
@@ -48,26 +48,29 @@ if (isset($_REQUEST["id"])) {
                 <h4>Tanggal Beli : <?= date_format($date, "d F Y") ?></h4>
                 <h4>Beri Review : </h4>
                 <form action="" method="get">
-                <input type="hidden" name="id" value="<?=$_REQUEST["id"]?>">
-                <div id="star" class="d-flex mb-2 float-start">
-                    <img src="asset/Misc/star.png" alt="">
-                    <img src="asset/Misc/stargray.png" alt="">
-                    <img src="asset/Misc/stargray.png" alt="">
-                    <img src="asset/Misc/stargray.png" alt="">
-                    <img src="asset/Misc/stargray.png" alt="">
-                </div>
-                <div  class="d-flex mb-2 float-start" style="height:48px;">
-                    <input id="qtyStar" name="star" type="number" min="1" max="5" value="1" onchange="ganti()" onKeyDown="return false" class="my-1 mx-2">
-                </div>
-                <div style="clear: both;"></div>
-                <textarea name="review" id="review" cols="60" rows="5"></textarea> <br>
-                <a href="index.php"><button type="button" class="btn btn-danger">Cancel</button></a>
-                <button name="btSubmit" class="btn btn-primary">Submit</button>
+                    <input type="hidden" name="id" value="<?= $_REQUEST["id"] ?>">
+                    <div id="star" class="d-flex mb-2 float-start">
+                        <img src="asset/Misc/star.png" alt="">
+                        <img src="asset/Misc/stargray.png" alt="">
+                        <img src="asset/Misc/stargray.png" alt="">
+                        <img src="asset/Misc/stargray.png" alt="">
+                        <img src="asset/Misc/stargray.png" alt="">
+                    </div>
+                    <div class="d-flex mb-2 float-start" style="height:48px;">
+                        <input id="qtyStar" name="star" type="number" min="1" max="5" value="1" onchange="ganti()" onKeyDown="return false" class="my-1 mx-2">
+                    </div>
+                    <div style="clear: both;"></div>
+                    <textarea name="review" id="review" cols="60" rows="5"></textarea> <br>
+                    <a href="index.php"><button type="button" class="btn btn-danger">Cancel</button></a>
+                    <button name="btSubmit" class="btn btn-primary">Submit</button>
                 </form>
             </div>
         </div>
     </div>
 </body>
+<?php
+require_once("footer.php");
+?>
 
 </html>
 <script>

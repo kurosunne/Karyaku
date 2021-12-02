@@ -42,8 +42,8 @@
     //var_dump($harga);
 ?>
 
-<body>
-    <div class="container d-flex justify-content-center mt-3 flex-column">
+<body style="min-height:100vh; display: flex; flex-direction:column;">
+    <div class="container d-flex mt-3 flex-column" style="flex-grow: 1; justify-content:flex-start">
         <form action="#" method="get" style="width:100%"; class="">
             <input type="text" name="nama" class="ms-2" style="width: 40%;" placeholder="Search">
             <select name="category" id="">
@@ -186,6 +186,9 @@
             ?>
         </div>
     </div>
+    <?php
+        require_once("footer.php");
+    ?>
 </body>
 
 </html>

@@ -11,7 +11,7 @@ require_once("koneksi.php");
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <form action="search.php" method="get" class="d-flex ms-xxl-3 me-xxl-5" style="height: 40px;">
+                <form action="../../search.php" method="get" class="d-flex ms-xxl-3 me-xxl-5" style="height: 40px;">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="nama" style="width: 73vw;">
                     <button class="btn btn-outline-custom" type="submit">Search</button>
                 </form>
