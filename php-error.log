@@ -5,3 +5,15 @@ Stack trace:
 #0 C:\xampp\htdocs\Karyaku\kontroler.php(617): mysqli_stmt->bind_param('i', 1, 'menunggu konfir...')
 #1 {main}
   thrown in C:\xampp\htdocs\Karyaku\kontroler.php on line 617
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36

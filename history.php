@@ -56,7 +56,7 @@ $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
                     </div>
                     <?php
                     if ($value["order_info"] == "completed"  && $value["rate"] == 0) {
-                        echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+                        echo '<div class="col-1"><div style="height:70%;"></div><a href="review.php?id='.$value["History_id"].'"><button class="btn btn-primary">Review</button></a></div>';
                     }
                     if ($value["order_info"] == "completed"  && $value["rate"] != 0) {
                         echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';

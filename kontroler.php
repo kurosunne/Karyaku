@@ -28,6 +28,147 @@ if (isset($_REQUEST["action"])) {
             </div>';
     }
 
+    if ($_REQUEST["action"] == "report") {
+        echo '<div class="d-flex flex-column align-items-center">
+        <h1 class="my-4">Report</h1>
+    </div>
+    <div class="d-flex align-items-center">
+        <p style="margin-left: 150px;">Tahun : </p><input id="tahun" onchange="tahun()" type="number" min="2021" value="2021" onKeyDown="return false" class="mb-3 ms-5">
+    </div>';
+        $data = array();
+        for ($i = 1; $i <= 12; $i++) {
+            $queri = $koneksi->prepare("SELECT  SUM(h.qty*lp.price) as 'total' from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.order_info='completed' and MONTH(h.date)=? and YEAR(h.date)=?");
+            $tahun = 2021;
+            $queri->bind_param("ii", $i, $tahun);
+            $queri->execute();
+            $temp = $queri->get_result()->fetch_row();
+            if ($temp[0] == null) {
+                $temp[0] = 0;
+            }
+            array_push($data, $temp);
+        }
+        echo '<div id="chartt"><script type="text/javascript">
+        google.charts.load("current", {
+            packages: ["corechart"]
+        });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ["Element", "Density", {
+                    role: "style"
+                }],
+                ["Januari", ' . $data[0][0] . ', "gold"],
+                ["Februari", ' . $data[1][0] . ', "cyan"],
+                ["Maret", ' . $data[2][0] . ', "gold"],
+                ["April", ' . $data[3][0] . ', "cyan"],
+                ["Mei", ' . $data[4][0] . ', "gold"],
+                ["Juni", ' . $data[5][0] . ', "cyan"],
+                ["Juli", ' . $data[6][0] . ', "gold"],
+                ["Agustus", ' . $data[7][0] . ', "cyan"],
+                ["September", ' . $data[8][0] . ', "gold"],
+                ["Oktober", ' . $data[9][0] . ', "cyan"],
+                ["November", ' . $data[10][0] . ', "gold"],
+                ["Desember", ' . $data[11][0] . ', "cyan"]
+            ]);
+
+            var view = new google.visualization.DataView(data);
+            view.setColumns([0, 1,
+                {
+                    calc: "stringify",
+                    sourceColumn: 1,
+                    type: "string",
+                    role: "annotation"
+                },
+                2
+            ]);
+
+            var options = {
+                title: "Report Total Penghasilan Kotor Sepanjang Tahun",
+                width: 1500,
+                height: 600,
+                bar: {
+                    groupWidth: "80%"
+                },
+                legend: {
+                    position: "none"
+                },
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+            chart.draw(view, options);
+        }
+    </script>
+    <div id="columnchart_values" style="width: 1500px; height: 600px;"></div></div>';
+    }
+
+    //Report Tahun
+    if ($_REQUEST["action"] == "tahun") {
+        $data = array();
+        for ($i = 1; $i <= 12; $i++) {
+            $queri = $koneksi->prepare("SELECT  SUM(h.qty*lp.price) as 'total' from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.order_info='completed' and MONTH(h.date)=? and YEAR(h.date)=?");
+            $tahun = $_REQUEST["thn"];
+            $queri->bind_param("ii", $i, $tahun);
+            $queri->execute();
+            $temp = $queri->get_result()->fetch_row();
+            if ($temp[0] == null) {
+                $temp[0] = 0;
+            }
+            array_push($data, $temp);
+        }
+        echo '<script type="text/javascript">
+        google.charts.load("current", {
+            packages: ["corechart"]
+        });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ["Element", "Density", {
+                    role: "style"
+                }],
+                ["Januari", ' . $data[0][0] . ', "gold"],
+                ["Februari", ' . $data[1][0] . ', "cyan"],
+                ["Maret", ' . $data[2][0] . ', "gold"],
+                ["April", ' . $data[3][0] . ', "cyan"],
+                ["Mei", ' . $data[4][0] . ', "gold"],
+                ["Juni", ' . $data[5][0] . ', "cyan"],
+                ["Juli", ' . $data[6][0] . ', "gold"],
+                ["Agustus", ' . $data[7][0] . ', "cyan"],
+                ["September", ' . $data[8][0] . ', "gold"],
+                ["Oktober", ' . $data[9][0] . ', "cyan"],
+                ["November", ' . $data[10][0] . ', "gold"],
+                ["Desember", ' . $data[11][0] . ', "cyan"]
+            ]);
+
+            var view = new google.visualization.DataView(data);
+            view.setColumns([0, 1,
+                {
+                    calc: "stringify",
+                    sourceColumn: 1,
+                    type: "string",
+                    role: "annotation"
+                },
+                2
+            ]);
+
+            var options = {
+                title: "Report Total Penghasilan Kotor Sepanjang Tahun",
+                width: 1500,
+                height: 600,
+                bar: {
+                    groupWidth: "80%"
+                },
+                legend: {
+                    position: "none"
+                },
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+            chart.draw(view, options);
+        }
+    </script>
+    <div id="columnchart_values" style="width: 1500px; height: 600px;"></div>';
+    }
+
     //MENU ADD PRODUCT
     if ($_REQUEST["action"] == "addProduct") {
         $queri = $koneksi->prepare("select * from list_category");
@@ -604,11 +745,15 @@ if (isset($_REQUEST["action"])) {
             echo '">Order Info : ' . $value["order_info"] . '</p>
                     </div>';
 
-            if ($value["order_info"] == "completed" && $value["rate"]==0) {
-                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            if ($value["order_info"] == "completed" && $value["rate"] == 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="review.php?id=' . $value["History_id"] . '"><button class="btn btn-primary">Review</button></a></div>';
             }
-            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
-            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            if ($value["order_info"] == "completed"  && $value["rate"] != 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';
+            }
+            if ($value["order_info"] == "sedang dikirim") {
+                echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai(' . $value["History_id"] . ')" class="btn btn-success">Selesai</button></div>';
+            }
             echo '</div>';
         }
     }
@@ -616,7 +761,7 @@ if (isset($_REQUEST["action"])) {
     if ($_REQUEST["action"] == "menunggu") {
         $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? and h.order_info=? order by h.History_id desc");
         $stat = "menunggu konfirmasi";
-        $query->bind_param("is", $_SESSION["active"]["users_id"],$stat);
+        $query->bind_param("is", $_SESSION["active"]["users_id"], $stat);
         $query->execute();
         $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -643,11 +788,15 @@ if (isset($_REQUEST["action"])) {
             echo '">Order Info : ' . $value["order_info"] . '</p>
                     </div>';
 
-            if ($value["order_info"] == "completed"  && $value["rate"]==0) {
-                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            if ($value["order_info"] == "completed"  && $value["rate"] == 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="review.php?id=' . $value["History_id"] . '"><button class="btn btn-primary">Review</button></a></div>';
             }
-            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
-            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            if ($value["order_info"] == "completed"  && $value["rate"] != 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';
+            }
+            if ($value["order_info"] == "sedang dikirim") {
+                echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai(' . $value["History_id"] . ')" class="btn btn-success">Selesai</button></div>';
+            }
             echo '</div>';
         }
     }
@@ -655,7 +804,7 @@ if (isset($_REQUEST["action"])) {
     if ($_REQUEST["action"] == "dikirim") {
         $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? and h.order_info=? order by h.History_id desc");
         $stat = "sedang dikirim";
-        $query->bind_param("is", $_SESSION["active"]["users_id"],$stat);
+        $query->bind_param("is", $_SESSION["active"]["users_id"], $stat);
         $query->execute();
         $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -682,11 +831,15 @@ if (isset($_REQUEST["action"])) {
             echo '">Order Info : ' . $value["order_info"] . '</p>
                     </div>';
 
-            if ($value["order_info"] == "completed"  && $value["rate"]==0) {
-                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            if ($value["order_info"] == "completed"  && $value["rate"] == 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="review.php?id=' . $value["History_id"] . '"><button class="btn btn-primary">Review</button></a></div>';
             }
-            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
-            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            if ($value["order_info"] == "completed"  && $value["rate"] != 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';
+            }
+            if ($value["order_info"] == "sedang dikirim") {
+                echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai(' . $value["History_id"] . ')" class="btn btn-success">Selesai</button></div>';
+            }
             echo '</div>';
         }
     }
@@ -694,7 +847,7 @@ if (isset($_REQUEST["action"])) {
     if ($_REQUEST["action"] == "completed") {
         $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? and h.order_info=? order by h.History_id desc");
         $stat = "completed";
-        $query->bind_param("is", $_SESSION["active"]["users_id"],$stat);
+        $query->bind_param("is", $_SESSION["active"]["users_id"], $stat);
         $query->execute();
         $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -721,11 +874,15 @@ if (isset($_REQUEST["action"])) {
             echo '">Order Info : ' . $value["order_info"] . '</p>
                     </div>';
 
-            if ($value["order_info"] == "completed"  && $value["rate"]==0) {
-                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            if ($value["order_info"] == "completed"  && $value["rate"] == 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="review.php?id=' . $value["History_id"] . '"><button class="btn btn-primary">Review</button></a></div>';
             }
-            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
-            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            if ($value["order_info"] == "completed"  && $value["rate"] != 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';
+            }
+            if ($value["order_info"] == "sedang dikirim") {
+                echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai(' . $value["History_id"] . ')" class="btn btn-success">Selesai</button></div>';
+            }
             echo '</div>';
         }
     }
@@ -733,7 +890,7 @@ if (isset($_REQUEST["action"])) {
     if ($_REQUEST["action"] == "gagal") {
         $query = $koneksi->prepare("SELECT *, (h.qty*lp.price) as 'total', lp.name as namaProduk from history h, list_product lp, list_user lu where h.product_id=lp.product_id and lu.users_id=h.user_id and h.user_id=? and h.order_info=? order by h.History_id desc");
         $stat = "gagal";
-        $query->bind_param("is", $_SESSION["active"]["users_id"],$stat);
+        $query->bind_param("is", $_SESSION["active"]["users_id"], $stat);
         $query->execute();
         $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -760,11 +917,15 @@ if (isset($_REQUEST["action"])) {
             echo '">Order Info : ' . $value["order_info"] . '</p>
                     </div>';
 
-            if ($value["order_info"] == "completed"  && $value["rate"]==0) {
-                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-primary">Review</button></a></div>';
+            if ($value["order_info"] == "completed"  && $value["rate"] == 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="review.php?id=' . $value["History_id"] . '"><button class="btn btn-primary">Review</button></a></div>';
             }
-            if($value["order_info"]=="completed"  && $value["rate"]!=0){echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';}
-            if($value["order_info"]=="sedang dikirim"){echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai('.$value["History_id"].')" class="btn btn-success">Selesai</button></div>';}
+            if ($value["order_info"] == "completed"  && $value["rate"] != 0) {
+                echo '<div class="col-1"><div style="height:70%;"></div><a href="#"><button class="btn btn-secondary">Reviewed</button></a></div>';
+            }
+            if ($value["order_info"] == "sedang dikirim") {
+                echo '<div class="col-1"><div style="height:70%;"></div><button onclick="selesai(' . $value["History_id"] . ')" class="btn btn-success">Selesai</button></div>';
+            }
             echo '</div>';
         }
     }
@@ -773,7 +934,17 @@ if (isset($_REQUEST["action"])) {
         $id = $_REQUEST["id"];
         $modif = $koneksi->prepare("UPDATE history set order_info=? where history_id=?");
         $stat = "completed";
-        $modif->bind_param("si",$stat,$id);
+        $modif->bind_param("si", $stat, $id);
         $modif->execute();
+    }
+
+    if ($_REQUEST["action"] == "ganti") {
+        $star = $_REQUEST["qty"];
+        for ($i = 0; $i < $star; $i++) {
+            echo '<img src="asset/Misc/star.png" alt="">';
+        }
+        for ($i = 0; $i < 5 - $star; $i++) {
+            echo '<img src="asset/Misc/stargray.png" alt="">';
+        }
     }
 }
