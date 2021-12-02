@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/karyakum/public_html/
+    - /bin/cp -R asset $DEPLOYPATH
+    - /bin/cp -R midtrans $DEPLOYPATH
+    - /bin/cp -R sql $DEPLOYPATH
+    - /bin/cp * $DEPLOYPATH
