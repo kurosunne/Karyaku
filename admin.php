@@ -590,6 +590,64 @@ foreach ($listP as $key => $value) {
         });
     }
 
+    //REPORT PRODUCT SALES
+    function displayProduct() {
+        // alert($("#d_month_product option:selected").val());
+        if ($("#d_month_product option:selected").val()=="") {
+            // alert("test");
+            $.ajax({
+                type: "post",
+                url: "print.php",
+                data: {
+                    action: "product_sales"
+                },
+                success: function (response) {
+                    $("#tb_pr_sal").html(response);
+                }
+            });
+        } else {
+            $.ajax({
+                type: "post",
+                url: "print.php",
+                data: {
+                    action: "product_sales",
+                    month_product: $("#d_month_product option:selected").val()
+                },
+                success: function (response) {
+                    $("#tb_pr_sal").html(response);
+                }
+            });
+        }
+    }
+
+    //REPORT CATEGORY SALES
+    function displayCategory() {
+        if ($("#d_month_cat option:selected").val()=="") {
+            $.ajax({
+                type: "post",
+                url: "print.php",
+                data: {
+                    action: "category_sales"
+                },
+                success: function (response) {
+                    $("#tb_cat_sal").html(response);
+                }
+            });
+        } else {
+            $.ajax({
+                type: "post",
+                url: "print.php",
+                data: {
+                    action: "category_sales",
+                    month_cat: $("#d_month_cat option:selected").val()
+                },
+                success: function (response) {
+                    $("#tb_cat_sal").html(response);
+                }
+            });
+        }
+    }
+
     $(document).ready(function() {
         $("#aler").modal("show");
     });

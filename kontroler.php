@@ -99,6 +99,64 @@ if (isset($_REQUEST["action"])) {
         }
     </script>
     <div id="columnchart_values" style="width: 1500px; height: 600px;"></div></div>';
+    echo "<div class='row'><h4 class='ml-3'>List of Product Sales</h4> </div>
+        <div class='row'>
+            <div class='col-5'>
+                <input type='hidden' name='p_action' value='product_sales'>
+                <select name='month_product' id='d_month_product'>
+                    <option style='display:none' disabled selected value> -- Month -- </option>
+                    <option value='1'>January</option>
+                    <option value='2'>February</option>
+                    <option value='3'>March</option>
+                    <option value='4'>April</option>
+                    <option value='5'>May</option>
+                    <option value='6'>June</option>
+                    <option value='7'>July</option>
+                    <option value='8'>August</option>
+                    <option value='9'>September</option>
+                    <option value='10'>October</option>
+                    <option value='11'>November</option>
+                    <option value='12'>December</option>
+                </select><br>
+                <button class='btn btn-primary mt-3' name='btProduct' style='height:40px;' onclick='displayProduct()'>Print</button>
+            </div>
+        </div>
+        <div class='row'>
+            <div id='tb_pr_sal'></div>
+        </div>
+        <div class='row'>
+            <div id='chart_pr_sal'></div>
+        </div>
+        ";
+    echo "<div class='row'><h4 class='ml-3'>List of Category Sales</h4> </div>
+        <div class='row'>
+            <div class='col-5'>
+                <input type='hidden' name='p_action' value='product_sales'>
+                <select name='month_cat' id='d_month_cat'>
+                    <option style='display:none' disabled selected value> -- Month -- </option>
+                    <option value='1'>January</option>
+                    <option value='2'>February</option>
+                    <option value='3'>March</option>
+                    <option value='4'>April</option>
+                    <option value='5'>May</option>
+                    <option value='6'>June</option>
+                    <option value='7'>July</option>
+                    <option value='8'>August</option>
+                    <option value='9'>September</option>
+                    <option value='10'>October</option>
+                    <option value='11'>November</option>
+                    <option value='12'>December</option>
+                </select><br>
+                <button class='btn btn-primary mt-3' name='btCategory' style='height:40px;' onclick='displayCategory()'>Print</button>
+            </div>
+        </div>
+        <div class='row'>
+            <div id='tb_cat_sal'></div>
+        </div>
+        <div class='row'>
+            <div id='chart_cat_sal'></div>
+        </div>
+    ";
     }
 
     //Report Tahun
