@@ -49,7 +49,7 @@ if (isset($_SESSION["index"])) {
         <h1 class="mt-3 mb-2" style="margin:auto;">Rekomendasi Produk</h1>
         <div style="width: 100%;" class="row">
             <?php
-            $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp order by rating desc");
+            $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp order by rand()");
             $query->execute();
             $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -80,10 +80,16 @@ if (isset($_SESSION["index"])) {
                     </div>
                 </a>
             <?php
+                if ($key==31) {
+                    break;
+                }
             }
             ?>
         </div>
     </div>
+    <?php
+        require_once("footer.php");
+    ?>
 </body>
 
 </html>

@@ -20,8 +20,8 @@ $query->execute();
 $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
-<body>
-    <div class="container">
+<body style="min-height:100vh; display: flex; flex-direction:column;">
+    <div class="container" style="flex-grow: 1;">
         <div class="row justify-content-center">
             <div class="col p-2 d-flex justify-content-center">
                 <div class="btn shadow bg-purple" onclick="alllist()" id="all" style="width: 80%;">All</div>
@@ -39,7 +39,7 @@ $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
                 <div class="btn shadow bg-gold" onclick="gagal()" id="gagal" style="width: 80%;">Gagal</div>
             </div>
         </div>
-        <div id="box">
+        <div id="box" >
             <?php
             foreach ($data as $key => $value) {
             ?>
@@ -71,6 +71,9 @@ $data = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             ?>
         </div>
     </div>
+    <?php
+        require_once("footer.php");
+    ?>
 </body>
 
 </html>

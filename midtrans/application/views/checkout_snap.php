@@ -27,7 +27,7 @@ if (isset($_SESSION["active"])) {
 $id = $_SESSION["active"]["users_id"];
 ?>
 
-<body>
+<body style="min-height:100vh; display: flex; flex-direction:column;">
   <div class="modal" id="cartSuccess" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -40,7 +40,7 @@ $id = $_SESSION["active"]["users_id"];
       </div>
     </div>
   </div>
-  <div class="container">
+  <div class="container" style="flex-grow: 1;">
     <div style="width: 100%;" class="row mt-3" id="box">
       <div class="col-9 row">
         <?php
@@ -228,7 +228,9 @@ $id = $_SESSION["active"]["users_id"];
       });
     }
   </script>
-
+  <?php
+        require_once("./application/controllers/footer.php");
+    ?>
 </body>
 
 </html>
