@@ -1,15 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search | Karyaku</title>
-    <?php
-    require_once("head.php");
-    ?>
-</head>
 <?php
     require_once("koneksi.php");
     require_once("header.php");
@@ -41,6 +29,19 @@
     }
     //var_dump($harga);
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search | Karyaku</title>
+    <?php
+    require_once("head.php");
+    ?>
+</head>
 
 <body style="min-height:100vh; display: flex; flex-direction:column;">
     <div class="container d-flex mt-3 flex-column" style="flex-grow: 1; justify-content:flex-start">
@@ -80,83 +81,83 @@
         <div style="width: 100%;" class="row">
             <?php
             if (!isset($harga) && !isset($rating) && !isset($category) && !isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp where lp.name like ? order by rating desc");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp where lp.name like ? order by rating desc");
                 $query->bind_param("s", $nama);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (isset($harga) && !isset($rating) && !isset($category) && !isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? ORDER BY lp.price $harga");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? ORDER BY lp.price $harga");
                 $query->bind_param("s", $nama);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (!isset($harga) && isset($rating) && !isset($category) && !isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? ORDER BY rating $rating");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? ORDER BY rating $rating");
                 $query->bind_param("s", $nama);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (!isset($harga) && !isset($rating) && isset($category) && !isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ?");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ?");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (!isset($harga) && !isset($rating) && !isset($category) && isset($stok)) {
                 // var_dump($stok);
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? AND lp.stock $stok 0 order by rating desc");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? AND lp.stock $stok 0 order by rating desc");
                 $query->bind_param("s", $nama);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (isset($harga) && isset($rating) && !isset($category) && !isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? ORDER BY rating $rating, lp.price $harga");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? ORDER BY rating $rating, lp.price $harga");
                 $query->bind_param("s", $nama);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (isset($harga) && !isset($rating) && isset($category) && !isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? ORDER BY lp.price $harga");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? ORDER BY lp.price $harga");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (isset($harga) && !isset($rating) && !isset($category) && isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? AND lp.stock $stok 0 order by lp.price $harga");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? AND lp.stock $stok 0 order by lp.price $harga");
                 $query->bind_param("s", $nama);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (!isset($harga) && isset($rating) && isset($category) && !isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? ORDER BY rating $rating");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? ORDER BY rating $rating");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (!isset($harga) && isset($rating) && !isset($category) && isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? AND lp.stock $stok 0 ORDER BY rating $rating");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? AND lp.stock $stok 0 ORDER BY rating $rating");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (!isset($harga) && !isset($rating) && isset($category) && isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? AND lp.stock $stok 0");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? AND lp.stock $stok 0");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (isset($harga) && isset($rating) && isset($category) && !isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? ORDER BY rating $rating, lp.price $harga");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? ORDER BY rating $rating, lp.price $harga");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (isset($harga) && !isset($rating) && isset($category) && isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? AND lp.stock $stok 0 ORDER BY lp.price $harga");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? AND lp.stock $stok 0 ORDER BY lp.price $harga");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (isset($harga) && isset($rating) && !isset($category) && isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? AND lp.stock $stok 0 ORDER BY rating $rating, lp.price $harga");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp WHERE lp.name LIKE ? AND lp.stock $stok 0 ORDER BY rating $rating, lp.price $harga");
                 $query->bind_param("s", $nama);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else if (!isset($harga) && isset($rating) && isset($category) && isset($stok)) {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? AND lp.stock $stok 0 ORDER BY rating $rating");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? AND lp.stock $stok 0 ORDER BY rating $rating");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
             } else {
-                $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? AND lp.stock $stok 0 ORDER BY rating $rating, lp.price $harga");
+                $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) FROM history h WHERE lp.product_id=h.product_id AND h.rate!=0) ,'0') AS 'rating' FROM list_product lp, product_category pc WHERE lp.name LIKE ? AND pc.product_id = lp.product_id AND pc.category_id = ? AND lp.stock $stok 0 ORDER BY rating $rating, lp.price $harga");
                 $query->bind_param("ss", $nama, $category);
                 $query->execute();
                 $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -171,7 +172,7 @@
                             <p class="my-0 ms-1"><?= $value["name"] ?></p>
                         </div>
                         <div>
-                            <img class="float-start ms-2" src="asset/Misc/star.png" alt="" height="25px">
+                            <img class="float-start ms-2" src="asset/misc/star.png" alt="" height="25px">
                             <p class="float-start mx-2"><?= $value["rating"] ?>/5</p>
                             <p class="float-end mx-2">Rp. <?= number_format($value["price"], 2, ',', '.') ?></p>
                             <?php if ($value["stock"]=="0") {

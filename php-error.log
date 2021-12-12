@@ -17,3 +17,12 @@ Stack trace:
 [02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
 [02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
 [02-Dec-2021 12:02:38 Europe/Berlin] PHP Warning:  Undefined array key "thn" in C:\xampp\htdocs\Karyaku\kontroler.php on line 36
+[09-Dec-2021 06:44:44 UTC] PHP Notice:  Undefined index: image in /home/karyakum/public_html/kontroler.php on line 239
+[11-Dec-2021 15:47:17 UTC] PHP Fatal error:  Uncaught Error: Call to a member function bind_param() on boolean in /home/karyakum/public_html/kontroler.php:702
+Stack trace:
+#0 {main}
+  thrown in /home/karyakum/public_html/kontroler.php on line 702
+[11-Dec-2021 15:47:54 UTC] PHP Fatal error:  Uncaught Error: Call to a member function bind_param() on boolean in /home/karyakum/public_html/kontroler.php:702
+Stack trace:
+#0 {main}
+  thrown in /home/karyakum/public_html/kontroler.php on line 702

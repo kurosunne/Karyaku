@@ -1,4 +1,17 @@
 <!--punya-->
+<?php
+require_once("./application/controllers/koneksi.php");
+require_once("./application/controllers/header.php");
+if (isset($_SESSION["active"])) {
+  if ($_SESSION["active"] == "admin") {
+    header("Location: ../../index.php");
+  }
+} else {
+  header("Location: ../../login.php");
+}
+
+$id = $_SESSION["active"]["users_id"];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,19 +26,6 @@
   <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<SB-Mid-client-38oOCo7vkXtCsA9G>"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
-<?php
-require_once("./application/controllers/koneksi.php");
-require_once("./application/controllers/header.php");
-if (isset($_SESSION["active"])) {
-  if ($_SESSION["active"] == "admin") {
-    header("Location: ../../index.php");
-  }
-} else {
-  header("Location: ../../login.php");
-}
-
-$id = $_SESSION["active"]["users_id"];
-?>
 
 <body style="min-height:100vh; display: flex; flex-direction:column;">
   <div class="modal" id="cartSuccess" tabindex="-1">
@@ -44,7 +44,7 @@ $id = $_SESSION["active"]["users_id"];
     <div style="width: 100%;" class="row mt-3" id="box">
       <div class="col-9 row">
         <?php
-        $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating', c.* FROM list_product lp, cart c where lp.product_id=c.product_id and c.user_id=? order by rating desc");
+        $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating', c.* FROM list_product lp, cart c where lp.product_id=c.product_id and c.user_id=? order by rating desc");
         $query->bind_param("i", $id);
         $query->execute();
         $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -69,11 +69,17 @@ $id = $_SESSION["active"]["users_id"];
           } else {
             $teeeemp = $value['price'];
           }
+          $namaa="";
+          if(strlen($value["name"]) > 25) {
+            $namaa = substr($value["name"], 0, 25);
+          } else {
+            $namaa = $value["name"];
+          }
           $item1_details = array(
             'id' => $value["product_id"],
             'price' => $teeeemp,
             'quantity' => $value['qty'],
-            'name' => $value["name"]
+            'name' => $namaa
           );
           array_push($item_details, $item1_details);
         ?>
@@ -87,7 +93,7 @@ $id = $_SESSION["active"]["users_id"];
                 <div>
                   <?= count($resdiskon) > 0 ? "<p class='float-end mx-2 mt-0 my-0' style='color:grey; text-decoration:line-through; ?>;''>Rp. " . number_format($value["price"], 2, ',', '.') . "</p>" : '' ?>
                   <div style="clear: both;"></div>
-                  <img class="float-start ms-2" src="../../asset/Misc/star.png" alt="" height="25px">
+                  <img class="float-start ms-2" src="../../asset/misc/star.png" alt="" height="25px">
                   <p class="float-start mx-2"><?= $value["rating"] ?>/5</p>
                   <?php
                   if (count($resdiskon) > 0) {
@@ -128,7 +134,7 @@ $id = $_SESSION["active"]["users_id"];
   </div>
   <!--punya-->
 
-  <form id="payment-form" method="post" action="<?= site_url() ?>/snap/finish">
+  <form id="payment-form" method="post" action="./snap/finish">
     <input type="hidden" name="result_type" id="result-type" value=""></div>
     <input type="hidden" name="result_data" id="result-data" value=""></div>
   </form>

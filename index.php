@@ -1,3 +1,14 @@
+<?php
+require_once("koneksi.php");
+require_once("header.php");
+if (isset($_SESSION["index"])) {
+    unset($_SESSION["index"]);
+}
+//echo "<pre>";
+//var_dump($_SESSION["active"]);
+//echo "</pre>";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,17 +21,6 @@
     require_once("head.php");
     ?>
 </head>
-
-<?php
-require_once("koneksi.php");
-require_once("header.php");
-if (isset($_SESSION["index"])) {
-    unset($_SESSION["index"]);
-}
-//echo "<pre>";
-//var_dump($_SESSION["active"]);
-//echo "</pre>";
-?>
 
 <body>
     <div class="container d-flex justify-content-center mt-3 flex-column">
@@ -49,7 +49,7 @@ if (isset($_SESSION["index"])) {
         <h1 class="mt-3 mb-2" style="margin:auto;">Rekomendasi Produk</h1>
         <div style="width: 100%;" class="row">
             <?php
-            $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp order by rand()");
+            $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp order by rand()");
             $query->execute();
             $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -68,7 +68,7 @@ if (isset($_SESSION["index"])) {
                         <div>
                             <?= count($resdiskon) > 0 ? "<p class='float-end mx-2 mt-0 my-0' style='color:grey; text-decoration:line-through; ?>;''>Rp. " . number_format($value["price"], 2, ',', '.') . "</p>" : '' ?>
                             <div style="clear: both;"></div>
-                            <img class="float-start ms-2" src="asset/Misc/star.png" alt="" height="25px">
+                            <img class="float-start ms-2" src="asset/misc/star.png" alt="" height="25px">
                             <p class="float-start mx-2"><?= $value["rating"] ?>/5</p>
                             <?php
                             if (count($resdiskon) > 0) {

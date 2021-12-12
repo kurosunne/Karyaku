@@ -40,7 +40,7 @@ $id = $_SESSION["active"]["users_id"];
     <div class="container" style="flex-grow: 1;">
         <div style="width: 100%;" class="row" id="box">
             <?php
-            $query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp, wishlist w where lp.product_id=w.product_id and w.user_id=? order by rating desc");
+            $query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp, wishlist w where lp.product_id=w.product_id and w.user_id=? order by rating desc");
             $query->bind_param("i", $id);
             $query->execute();
             $hasil = $query->get_result()->fetch_all(MYSQLI_ASSOC);

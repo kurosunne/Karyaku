@@ -13,13 +13,13 @@
             if (isset($_REQUEST["month_product"])) {
                 // var_dump($_REQUEST["month_product"]);
                 $month = $_REQUEST["month_product"];
-                $data = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),'0') as 'total', lp.name from list_product lp LEFT JOIN history h ON lp.product_id=h.product_id and h.order_info='completed' and MONTH(h.date)=? GROUP BY lp.product_id ORDER BY total desc");
+                $data = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),0) as total, lp.name from list_product lp LEFT JOIN history h ON lp.product_id=h.product_id and h.order_info='completed' and MONTH(h.date)=? GROUP BY lp.product_id ORDER BY total desc");
                 $data->bind_param("s", $month);
                 $data->execute();
                 $res = $data->get_result();
                 $dataGet = $res->fetch_all(MYSQLI_ASSOC);
 
-                $dataL = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),'0') as 'total', lp.name from list_product lp LEFT JOIN history h ON lp.product_id=h.product_id and h.order_info='completed' and MONTH(h.date)=? GROUP BY lp.product_id ORDER BY total desc LIMIT 5");
+                $dataL = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),0) as total, lp.name from list_product lp LEFT JOIN history h ON lp.product_id=h.product_id and h.order_info='completed' and MONTH(h.date)=? GROUP BY lp.product_id ORDER BY total desc LIMIT 5");
                 $dataL->bind_param("s", $month);
                 $dataL->execute();
                 $resL = $dataL->get_result();
@@ -35,7 +35,7 @@
                 unset($row);
 
             } else {
-                $data = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),'0') as 'total', lp.name from list_product lp LEFT JOIN history h ON lp.product_id = h.product_id AND h.order_info='completed' GROUP BY lp.product_id ORDER BY total DESC");
+                $data = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),0) as 'total', lp.name from list_product lp LEFT JOIN history h ON lp.product_id = h.product_id AND h.order_info='completed' GROUP BY lp.product_id ORDER BY total DESC");
                 if (!$data) {
                     printf("Error message: %s\n", $koneksi->error);
                 }
@@ -43,7 +43,7 @@
                 $res = $data->get_result();
                 $dataGet = $res->fetch_all(MYSQLI_ASSOC);
 
-                $dataL = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),'0') as 'total', lp.name from list_product lp LEFT JOIN history h ON lp.product_id = h.product_id AND h.order_info='completed' GROUP BY lp.product_id ORDER BY total DESC LIMIT 5");
+                $dataL = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),0) as total, lp.name from list_product lp LEFT JOIN history h ON lp.product_id = h.product_id AND h.order_info='completed' GROUP BY lp.product_id ORDER BY total DESC LIMIT 5");
                 if (!$dataL) {
                     printf("Error message: %s\n", $koneksi->error);
                 }
@@ -67,7 +67,7 @@
         } else if ($_REQUEST["action"]=="category_sales") {
             if (isset($_REQUEST["month_cat"])) {
                 $month = $_REQUEST["month_cat"];
-                $data = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),'0') as 'total', c.nama FROM product_category pc LEFT JOIN history h ON pc.product_id = h.product_id AND h.order_info='completed' and MONTH(h.date)=? LEFT JOIN list_category c ON c.category_id = pc.category_id LEFT JOIN list_product lp ON lp.product_id = h.product_id GROUP BY pc.category_id ORDER BY total DESC");
+                $data = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),0) as total, c.nama FROM product_category pc LEFT JOIN history h ON pc.product_id = h.product_id AND h.order_info='completed' and MONTH(h.date)=? LEFT JOIN list_category c ON c.category_id = pc.category_id LEFT JOIN list_product lp ON lp.product_id = h.product_id GROUP BY pc.category_id ORDER BY total DESC");
                 if (!$data) {
                     printf("Error message: %s\n", $koneksi->error);
                 }
@@ -76,7 +76,7 @@
                 $res = $data->get_result();
                 $dataGet = $res->fetch_all(MYSQLI_ASSOC);
 
-                $dataL = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),'0') as 'total', c.nama FROM product_category pc LEFT JOIN history h ON pc.product_id = h.product_id AND h.order_info='completed' and MONTH(h.date)=? LEFT JOIN list_category c ON c.category_id = pc.category_id LEFT JOIN list_product lp ON lp.product_id = h.product_id GROUP BY pc.category_id ORDER BY total DESC limit 5");
+                $dataL = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),0) as total, c.nama FROM product_category pc LEFT JOIN history h ON pc.product_id = h.product_id AND h.order_info='completed' and MONTH(h.date)=? LEFT JOIN list_category c ON c.category_id = pc.category_id LEFT JOIN list_product lp ON lp.product_id = h.product_id GROUP BY pc.category_id ORDER BY total DESC limit 5");
                 if (!$dataL) {
                     printf("Error message: %s\n", $koneksi->error);
                 }
@@ -95,7 +95,7 @@
                 unset($row);
 
             } else {
-                $data = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),'0') as 'total', c.nama FROM product_category pc LEFT JOIN history h ON pc.product_id = h.product_id AND h.order_info='completed' LEFT JOIN list_category c ON c.category_id = pc.category_id LEFT JOIN list_product lp ON lp.product_id = h.product_id GROUP BY pc.category_id ORDER BY total DESC");
+                $data = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),0) as total, c.nama FROM product_category pc LEFT JOIN history h ON pc.product_id = h.product_id AND h.order_info='completed' LEFT JOIN list_category c ON c.category_id = pc.category_id LEFT JOIN list_product lp ON lp.product_id = h.product_id GROUP BY pc.category_id ORDER BY total DESC");
                 if (!$data) {
                     printf("Error message: %s\n", $koneksi->error);
                 }
@@ -103,7 +103,7 @@
                 $res = $data->get_result();
                 $dataGet = $res->fetch_all(MYSQLI_ASSOC);
 
-                $dataL = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),'0') as 'total', c.nama FROM product_category pc LEFT JOIN history h ON pc.product_id = h.product_id AND h.order_info='completed' LEFT JOIN list_category c ON c.category_id = pc.category_id LEFT JOIN list_product lp ON lp.product_id = h.product_id GROUP BY pc.category_id ORDER BY total DESC LIMIT 5");
+                $dataL = $koneksi->prepare("SELECT COALESCE(ROUND(SUM(h.qty*lp.price),0),0) as total, c.nama FROM product_category pc LEFT JOIN history h ON pc.product_id = h.product_id AND h.order_info='completed' LEFT JOIN list_category c ON c.category_id = pc.category_id LEFT JOIN list_product lp ON lp.product_id = h.product_id GROUP BY pc.category_id ORDER BY total DESC LIMIT 5");
                 if (!$dataL) {
                     printf("Error message: %s\n", $koneksi->error);
                 }

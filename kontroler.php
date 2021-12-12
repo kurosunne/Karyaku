@@ -999,10 +999,10 @@ if (isset($_REQUEST["action"])) {
     if ($_REQUEST["action"] == "ganti") {
         $star = $_REQUEST["qty"];
         for ($i = 0; $i < $star; $i++) {
-            echo '<img src="asset/Misc/star.png" alt="">';
+            echo '<img src="asset/misc/star.png" alt="">';
         }
         for ($i = 0; $i < 5 - $star; $i++) {
-            echo '<img src="asset/Misc/stargray.png" alt="">';
+            echo '<img src="asset/misc/starGray.png" alt="">';
         }
     }
 }

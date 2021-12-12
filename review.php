@@ -1,15 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review</title>
-    <?php
-    require_once("head.php");
-    ?>
-</head>
 <?php
 require_once("koneksi.php");
 require_once("header.php");
@@ -36,8 +24,21 @@ if (isset($_REQUEST["id"])) {
 }
 ?>
 
-<body>
-    <div class="container">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review</title>
+    <?php
+    require_once("head.php");
+    ?>
+</head>
+
+<body style="min-height:100vh; display: flex; flex-direction:column;">
+    <div class="container" style="flex-grow: 1;">
         <div class="row" style="width: 100%;">
             <div class="col-3"><img src="<?= $hasil["image"] ?>" class="shadow" alt="" width="100%"></div>
             <div class="col-9">
@@ -50,11 +51,11 @@ if (isset($_REQUEST["id"])) {
                 <form action="" method="get">
                     <input type="hidden" name="id" value="<?= $_REQUEST["id"] ?>">
                     <div id="star" class="d-flex mb-2 float-start">
-                        <img src="asset/Misc/star.png" alt="">
-                        <img src="asset/Misc/stargray.png" alt="">
-                        <img src="asset/Misc/stargray.png" alt="">
-                        <img src="asset/Misc/stargray.png" alt="">
-                        <img src="asset/Misc/stargray.png" alt="">
+                        <img src="asset/misc/star.png" alt="">
+                        <img src="asset/misc/starGray.png" alt="">
+                        <img src="asset/misc/starGray.png" alt="">
+                        <img src="asset/misc/starGray.png" alt="">
+                        <img src="asset/misc/starGray.png" alt="">
                     </div>
                     <div class="d-flex mb-2 float-start" style="height:48px;">
                         <input id="qtyStar" name="star" type="number" min="1" max="5" value="1" onchange="ganti()" onKeyDown="return false" class="my-1 mx-2">

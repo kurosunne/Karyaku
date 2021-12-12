@@ -1,15 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Karyaku</title>
-    <?php
-    require_once("head.php");
-    ?>
-</head>
 <?php
 require_once("koneksi.php");
 if (isset($_REQUEST["btLogin"])) {
@@ -29,6 +17,7 @@ if (isset($_REQUEST["btLogin"])) {
                 if ($value["password"] == md5($_REQUEST["password"])) {
                     $berhasil = 3; //berhasil Login
                     header("Location: index.php");
+                    //echo '<script>window.location.href="index.php"</script>';
                     $_SESSION["active"] = $value;
                     $_SESSION["tipe"]="user";
                 } else {
@@ -42,6 +31,20 @@ if (isset($_REQUEST["btLogin"])) {
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Karyaku</title>
+    <?php
+    require_once("head.php");
+    ?>
+</head>
+
 
 <body>
     <?php

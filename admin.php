@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Karyaku</title>
-    <?php
-    require_once("head.php");
-    ?>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-</head>
 <?php
 require_once("koneksi.php");
 $berhasil = 0;
@@ -24,7 +10,7 @@ if (isset($_SESSION["active"])) {
     header("Location: index.php");
 }
 
-$queri = $koneksi->prepare("select * from list_category");
+$queri = $koneksi->prepare("SELECT * from list_category");
 $queri->execute();
 $hasil = $queri->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -44,13 +30,14 @@ if (isset($_REQUEST["btAdd"])) {
         $query = $koneksi->prepare("INSERT into list_product (name,price,stock,description,brand_name,image) values(?,?,?,?,?,?)");
         $query->bind_param("siisss", $_REQUEST["name"], $_REQUEST["price"], $_REQUEST["stock"], $_REQUEST["desc"], $_REQUEST["brand"], $_SESSION["image"]);
         $query->execute();
-
         foreach ($hasil as $key => $value) {
-            if (isset($_REQUEST["c" . $key + 1])) {
+            if (isset($_REQUEST["c" . ($key + 1)])) {
+                //echo '<script>alert("A")</script>';
                 $insert = $koneksi->prepare("INSERT into product_category (product_id,category_id) values (?,?)");
                 $temp = $all_product + 1;
                 $temp2 = $key + 1;
                 $insert->bind_param("ii", $temp, $temp2);
+                
                 $insert->execute();
             }
         }
@@ -104,16 +91,13 @@ if (isset($_REQUEST["btUpload"])) {
     $ext = $info["extension"];
     $filename = $info["filename"];
 
-    $sink = $target_dir . $all_product + 1 . "." . $ext;
+    $sink = $target_dir . ($all_product + 1) . "." . $ext;
+    //echo '<script>alert("'.$sink.'")</script>';
 
     $source = $f["tmp_name"];
 
-    if ($f["size"] > 200000) {
-        echo "File terlalu besar!";
-    } else {
-        $_SESSION["image"] = $sink;
-        move_uploaded_file($source, $sink);
-    }
+    $_SESSION["image"] = $sink;
+    move_uploaded_file($source, $sink);
 }
 
 $queryy = $koneksi->prepare("SELECT * from list_product");
@@ -134,20 +118,33 @@ foreach ($listP as $key => $value) {
 
         $source = $f["tmp_name"];
 
-        if ($f["size"] > 200000) {
-            echo "File terlalu besar!";
-        } else {
+
             move_uploaded_file($source, $sink);
             $upd = $koneksi->prepare("UPDATE list_product set image=? where product_id=?");
             $upd->bind_param("si", $sink, $value["product_id"]);
             $upd->execute();
             $_SESSION["index"] = 4;
             header("Location: admin.php");
-        }
+        
     }
 }
 
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | Karyaku</title>
+    <?php
+    require_once("head.php");
+    ?>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+</head>
 
 <body style="overflow: scroll;">
     <!--MODAL LIST-->
@@ -589,7 +586,7 @@ foreach ($listP as $key => $value) {
             $("#chartt").html(data);
         });
     }
-
+    
     //REPORT PRODUCT SALES
     function displayProduct() {
         // alert($("#d_month_product option:selected").val());
@@ -647,6 +644,7 @@ foreach ($listP as $key => $value) {
             });
         }
     }
+
 
     $(document).ready(function() {
         $("#aler").modal("show");

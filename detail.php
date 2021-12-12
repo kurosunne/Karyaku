@@ -18,7 +18,7 @@ $nama = $_REQUEST["nama"];
 <?php
 require_once("koneksi.php");
 require_once("header.php");
-$query = $koneksi->prepare("SELECT lp.*, NVL((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp where lp.product_id=?");
+$query = $koneksi->prepare("SELECT lp.*, COALESCE((SELECT CAST(SUM(h.rate)/count(h.rate) as INT) from history h where lp.product_id=h.product_id and h.rate!=0) ,'0') as 'rating' FROM list_product lp where lp.product_id=?");
 $query->bind_param("i", $id);
 $query->execute();
 $hasil = $query->get_result()->fetch_assoc();
@@ -36,7 +36,7 @@ $resdiskon = $diskon->get_result()->fetch_all(MYSQLI_ASSOC);
 $tempHarga = $hasil["price"];
 ?>
 
-<body>
+<body style="min-height:100vh; display: flex; flex-direction:column;">
     <!--MODAL ADD WISHLIST SUCCESS -->
     <div class="modal" id="wishlistSuccess" tabindex="-1">
         <div class="modal-dialog">
@@ -79,12 +79,12 @@ $tempHarga = $hasil["price"];
             </div>
         </div>
     </div>
-    <div class="container d-flex justify-content-center mt-3 flex-column">
+    <div class="container d-flex justify-content-center mt-3 flex-column" style="flex-grow: 1;">
         <div class="row" style="height: 500px;">
             <div class="col-4"><img class="shadow" src="<?= $hasil["image"] ?>" alt="" width="90%"></div>
             <div class="col-5">
                 <h3><?= $hasil["name"] ?></h3>
-                <img class="float-start ms-2" src="asset/Misc/star.png" alt="" height="25px">
+                <img class="float-start ms-2" src="asset/misc/star.png" alt="" height="25px">
                 <p class="float-start mx-2"><?= $hasil["rating"] ?>/5 <span class="text-secondary"> (<?= $hh["jumlah"] ?> review) </span></p>
                 <div style="clear: both;"></div>
                 <h5 style="color: <?= count($resdiskon)==0?"black":"gray" ?>; text-decoration:<?= count($resdiskon)==0?"none":"line-through" ?>;" >Rp. <?= number_format($tempHarga, 2, ',', '.') ?></h5>
@@ -120,9 +120,9 @@ $tempHarga = $hasil["price"];
 
             foreach ($preview as $key => $value) {
             ?>
-                <div class="col-9 mt-1 shadow">
+                <div class="col-9 mt-1 shadow mb-1">
                     <div class="float-start">
-                        <img src="asset/Misc/profil.jpg" alt="" class="mt-3" height="70px">
+                        <img src="asset/misc/profil.jpg" alt="" class="mt-3" height="70px">
                         <p class="mb-0"><?= $value["name"] ?></p>
                         <p class="my-0"><?= $value["date"] ?></p>
                     </div>

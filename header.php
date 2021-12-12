@@ -26,7 +26,7 @@ require_once("koneksi.php");
                     <div class="mx-xxl-4 me-xxl-5"></div>
                     <li class="nav-item dropdown">
                         <a href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" class="ps-5" aria-expanded="false">
-                            <img src="asset/Misc/profil.jpg" class="ms-xxl-5" alt="" height="40px" width="40px">
+                            <img src="asset/misc/profil.jpg" class="ms-xxl-5" alt="" height="40px" width="40px">
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown" style="width: 50px;">
                             <li><a class="dropdown-item" href="midtrans/index.php/snap">Cart</a></li>
